@@ -2,14 +2,10 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.badnewsbots.ds.devices.GamepadEx;
-import com.badnewsbots.robots.outreach.BeeLineChassis;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.badnewsbots.hardware.ds.GamepadEx;
+import com.badnewsbots.hardware.robots.BeeLineChassis;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import com.badnewsbots.ds.devices.GamepadEx;
-import com.badnewsbots.robots.outreach.BeeLineChassis;
 
 @TeleOp
 public final class BeeLineTeleOp extends LinearOpMode {
@@ -66,7 +62,7 @@ public final class BeeLineTeleOp extends LinearOpMode {
             }
             if (pusherState == PusherState.MOVING_OUT) {
                 if (currentTime - pusherTime >= 0.460) {
-                    robot.pusher.setPosition(0.48);
+                    robot.pusher.setPosition(0.6);
                     pusherTime = currentTime;
                     pusherState = PusherState.MOVING_IN;
                 }

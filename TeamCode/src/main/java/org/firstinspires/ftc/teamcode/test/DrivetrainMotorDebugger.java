@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.test;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.badnewsbots.ds.devices.GamepadEx;
+import com.badnewsbots.hardware.ds.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *
  */
 @TeleOp(group = "Test")
-public class DrivetrainMotorDebugger extends LinearOpMode {
+public final class DrivetrainMotorDebugger extends LinearOpMode {
     private FtcDashboard ftcDashboard;
     private GamepadEx gamepadEx1;
     private DcMotor front_left;
