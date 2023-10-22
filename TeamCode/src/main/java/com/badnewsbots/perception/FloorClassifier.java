@@ -42,6 +42,7 @@ public final class FloorClassifier {
     }
 
     // doesn't work :(
+    @Deprecated
     private FloorType classifyUsingCoolAlgorithm() {
         // Get latest sensor readings
         int androidColor = colorSensor.argb();

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Arrays;
 
@@ -18,6 +19,9 @@ public final class PipelineTest extends LinearOpMode {
     public void runOpMode() {
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         SignalSleeveProcessor signalSleeveProcessor = new SignalSleeveProcessor(640, 480, SignalSleeveProcessor.CameraOrientation.LEFT);
+        AprilTagProcessor aprilTagProcessor = new AprilTagProcessor.Builder()
+                //.setLensIntrinsics() // Uses one from builtinwebcamcalibrations.xml if available if you do not specify your own
+                .build();
 
         // Live view = on Robot Controller via HDMI, Camera Stream = DS
         VisionPortal visionPortal = new VisionPortal.Builder()
@@ -27,6 +31,7 @@ public final class PipelineTest extends LinearOpMode {
                 .setAutoStopLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
                 //.addProcessor(signalSleeveProcessor) // processors added are enabled by default
+                //.addProcessor(aprilTagProcessor)
                 .build();
 
         waitForStart();

@@ -83,7 +83,6 @@ public final class ColorSensorTest extends LinearOpMode {
             float[] rgb = new float[] {Color.red(androidColor), Color.green(androidColor), Color.blue(androidColor)}; // RGB values
 
             //dataPoints.add(hsv);
-
             telemetry.addData("Android Color from normalized colors", androidColor);
             telemetry.addData("HSV", Arrays.toString(hsv));
             telemetry.addData("RGB", Arrays.toString(rgb));

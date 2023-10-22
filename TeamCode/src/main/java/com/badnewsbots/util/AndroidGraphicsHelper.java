@@ -13,6 +13,7 @@ import android.graphics.Paint;
 // This is crucial because we can no longer draw image annotations in OpenCV itself, and instead must
 // use the Android Graphics classes like Canvas, Paint, and Bitmap to annotate on pipeline images
 public final class AndroidGraphicsHelper {
+    @Deprecated
     public static Bitmap scaleBitmapByFactor(Bitmap bitmap, float scaleFactor) {
         if (scaleFactor <= 0) {
             throw new RuntimeException();
@@ -29,6 +30,7 @@ public final class AndroidGraphicsHelper {
         return Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, false);
     }
 
+    @Deprecated
     public static void slowApplyMaskToCanvas(Canvas sourceCanvas, Bitmap maskBitmap, float scaleBmpPxToCanvasPx, int desiredColor) {
         //int width = sourceCanvas.getWidth();
         //int height = sourceCanvas.getHeight();
