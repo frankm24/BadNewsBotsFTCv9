@@ -155,7 +155,7 @@ public final class CoolAutonomousDrivingTest extends LinearOpMode {
                 // Determine heading and range error so we can use them to control the robot automatically.
                 double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
                 double headingError = desiredTag.ftcPose.bearing;
-                if (desiredTag.ftcPose.range <= 24) {
+                if (desiredTag.ftcPose.range <= 18) {
                     if (DESIRED_TAG_ID == 583) {
                         DESIRED_TAG_ID = 585;
                     } else {
@@ -166,12 +166,12 @@ public final class CoolAutonomousDrivingTest extends LinearOpMode {
                 // Set motor powers using the same speed calculation from demo but with Mecanum drivetrain
                 drive.setMotorPowerFromControllerVector(
                         0,
-                        Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftY
-                        Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN), //RightX
+                        Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED)/2, //LeftY
+                        -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN)/2, //RightX
                         1);
 
             } else { // If target not found, spin and keep looking
-                drive.setMotorPowerFromControllerVector(0, 0 ,-0.2, 1);
+                drive.setMotorPowerFromControllerVector(0, 0 ,0.2, 1);
             }
             telemetry.update();
         }
