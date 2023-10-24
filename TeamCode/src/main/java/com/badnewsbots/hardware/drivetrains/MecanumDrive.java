@@ -1,5 +1,7 @@
 package com.badnewsbots.hardware.drivetrains;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -28,19 +30,20 @@ public class MecanumDrive implements Drive {
         // To drive forward, most robots need the motor on one side to be reversed because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Single Gear Reduction or 90 Deg drives may require direction flips
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void setMotorPowerFromControllerVector(double LeftX, double LeftY, double RightX, double speedMultiplier) {
-        LeftX *= speedMultiplier;
-        LeftY *= speedMultiplier;
-        RightX *= speedMultiplier;
+
+        LeftX *= speedMultiplier; //LeftX is rotation, clockwise is + and counterclockwise is -
+        LeftY *= speedMultiplier; //LeftY is forward/back, forward is + and back is -
+        RightX *= speedMultiplier; //RightX is right/left, right is + and back is -
         double denominator = Math.max(Math.abs(LeftY) + Math.abs(LeftX) + Math.abs(RightX), 1);
-        double front_leftPower = (LeftY + LeftX + RightX) / denominator;
-        double back_leftPower = (LeftY - LeftX + RightX) / denominator;
-        double front_rightPower = (LeftY - LeftX - RightX) / denominator;
-        double back_rightPower = (LeftY + LeftX - RightX) / denominator;
+        double front_leftPower = (LeftY - RightX - LeftX) / denominator;
+        double back_leftPower = (LeftY + RightX - LeftX) / denominator;
+        double front_rightPower = (LeftY + RightX + LeftX) / denominator;
+        double back_rightPower = (LeftY - RightX + LeftX) / denominator;
         frontLeft.setPower(front_leftPower);
         backLeft.setPower(back_leftPower);
         frontRight.setPower(front_rightPower);
