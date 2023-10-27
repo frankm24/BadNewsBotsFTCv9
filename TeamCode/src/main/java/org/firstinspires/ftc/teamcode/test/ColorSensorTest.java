@@ -48,7 +48,7 @@ public final class ColorSensorTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        ModernRoboticsI2cColorSensor colorSensor = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "mr_color_sensor");
+        ModernRoboticsI2cColorSensor colorSensor = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "sensor_color");
         FloorClassifier floorClassifier = new FloorClassifier(colorSensor, true);
         waitForStart();
 
