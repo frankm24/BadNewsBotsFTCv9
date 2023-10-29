@@ -127,6 +127,7 @@ public final class AutonomousDrivingTest extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
+        int savedFrames = 0;
         while (opModeIsActive()) {
             FloorClassifier.FloorType current_floor = floorClassifier.update();
             targetFound = false;
@@ -185,6 +186,7 @@ public final class AutonomousDrivingTest extends LinearOpMode {
 
             telemetry.addData("Floor", current_floor);
             telemetry.update();
+            visionPortal.saveNextFrameRaw(savedFrames + ".png");
         }
     }
 
