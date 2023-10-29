@@ -103,7 +103,6 @@ else if rotating
 public final class TapeTagsAutonomousDrivingTest extends LinearOpMode {
     private AutonomousTestingBot robot;
     private MecanumDrive drive;
-    private NormalizedColorSensor colorSensor;
     private FloorClassifier floorClassifier;
 
     private final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
@@ -139,6 +138,7 @@ public final class TapeTagsAutonomousDrivingTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             FloorClassifier.FloorType current_floor = floorClassifier.update();
+
             targetFound = false;
             desiredTag  = null;
 
@@ -203,9 +203,7 @@ public final class TapeTagsAutonomousDrivingTest extends LinearOpMode {
         }
     }
 
-    /**
-     * Initialize the AprilTag processor.
-     */
+    // Initialize the AprilTag processor.
     private void initAprilTag() {
         // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder().build();
