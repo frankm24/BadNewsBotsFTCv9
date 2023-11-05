@@ -22,7 +22,7 @@ public final class AprilTagDataCollection extends LinearOpMode {
     private AutonomousTestingBot robot;
     private MecanumDrive drive;
 
-    private static int DESIRED_TAG_ID = 583;    // Choose the tag you want to approach or set to -1 for ANY tag.
+    private final int DESIRED_TAG_ID = 585;    // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -55,7 +55,7 @@ public final class AprilTagDataCollection extends LinearOpMode {
                 // Look to see if we have size info on this tag.
                 if (detection.metadata != null) {
                     //  Check to see if we want to track towards this tag.
-                    if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                    if ((detection.id == DESIRED_TAG_ID)) {
                         // Yes, we want to use this tag.
                         targetFound = true;
                         telemetry.addData("Target found", detection);
@@ -70,22 +70,14 @@ public final class AprilTagDataCollection extends LinearOpMode {
                     telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
                 }
             }
-
-            // If we have found the desired target, drive to it
             if (targetFound) {
                 // Tell the driver what we see.
                 telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
                 telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
                 telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-
-                double headingError = desiredTag.ftcPose.bearing;
-                if (desiredTag.ftcPose.range <= 18) {
-                    if (DESIRED_TAG_ID == 583) {
-                        DESIRED_TAG_ID = 585;
-                    } else {
-                        DESIRED_TAG_ID = 583;
-                    }
-                }
+                telemetry.addData("Roll", "%3.0f degrees", desiredTag.ftcPose.roll);
+                telemetry.addData("Pitch", "%3.0f degrees", desiredTag.ftcPose.pitch);
+                telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
             }
             telemetry.update();
         }

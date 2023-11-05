@@ -14,6 +14,7 @@ import android.graphics.Paint;
 // use the Android Graphics classes like Canvas, Paint, and Bitmap to annotate on pipeline images
 public final class AndroidGraphicsHelper {
     @Deprecated
+    // Obsolete. Use built-in scale method in Android graphics API.
     public static Bitmap scaleBitmapByFactor(Bitmap bitmap, float scaleFactor) {
         if (scaleFactor <= 0) {
             throw new RuntimeException();
@@ -30,6 +31,9 @@ public final class AndroidGraphicsHelper {
         return Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, false);
     }
 
+    // Terribly slow version of this function, only remains here for demonstration purposes to show how individual get and set methods causes such
+    // a slowdown versus only one bulk get and one bulk set. (Millions of JNI calls are made in this slower method as they are not automatically
+    // converted into one by the compiler. )
     @Deprecated
     public static void slowApplyMaskToCanvas(Canvas sourceCanvas, Bitmap maskBitmap, float scaleBmpPxToCanvasPx, int desiredColor) {
         //int width = sourceCanvas.getWidth();
