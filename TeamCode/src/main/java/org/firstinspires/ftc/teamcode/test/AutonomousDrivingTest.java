@@ -119,7 +119,7 @@ public final class AutonomousDrivingTest extends LinearOpMode {
         // Initialize the VisionPortal with an AprilTagProcessor
         initAprilTag();
 
-        setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+        setManualExposure(3, 250);  // Use low exposure time to reduce motion blur
 
         // Confirm we are ready and wait for the driver to press Start
         telemetry.addData("Status", "Initialized");
@@ -175,18 +175,19 @@ public final class AutonomousDrivingTest extends LinearOpMode {
 
                 // Set motor powers using the same speed calculation from demo but with Mecanum drivetrain
                 drive.setMotorPowerFromControllerVector(
-                        Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftX
+                        Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE), //LeftX
                         Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftY
-                        -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN), //RightX
+                        -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN)*2, //RightX
                         1);
 
             } else { // If target not found, spin and keep looking
-                drive.setMotorPowerFromControllerVector(0, 0 ,0.2, 1);
+                drive.setMotorPowerFromControllerVector(0, 0 ,0.3, 1);
+                visionPortal.saveNextFrameRaw("/Pictures/" + savedFrames);
+                savedFrames++;
             }
 
             telemetry.addData("Floor", current_floor);
             telemetry.update();
-            visionPortal.saveNextFrameRaw(savedFrames + ".png");
         }
     }
 

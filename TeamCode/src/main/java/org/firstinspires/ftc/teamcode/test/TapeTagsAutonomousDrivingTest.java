@@ -36,7 +36,6 @@ import com.badnewsbots.hardware.robots.AutonomousTestingBot;
 import com.badnewsbots.perception.FloorClassifier;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -105,14 +104,17 @@ public final class TapeTagsAutonomousDrivingTest extends LinearOpMode {
     private MecanumDrive drive;
     private FloorClassifier floorClassifier;
 
+    private final double STRAFE_GAIN =  0.005 ;
     private final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     private final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
+    private final double MAX_AUTO_STRAFE = 0.5;
     private final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    private final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
+    private final double MAX_AUTO_TURN  = 0.5;  //  Clip the turn speed to this max value (adjust for your robot)
 
     private final double DESIRED_DISTANCE = 6.0; // How close the camera should get to the target
     private static int DESIRED_TAG_ID = 0;    // Choose the tag you want to approach or set to -1 for ANY tag.
+    private boolean SEARCHING = false;
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -173,32 +175,40 @@ public final class TapeTagsAutonomousDrivingTest extends LinearOpMode {
                 // Determine heading and range error so we can use them to control the robot automatically.
                 double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
                 double headingError = desiredTag.ftcPose.bearing;
-                if (desiredTag.ftcPose.range <= 18) {
+                double yawError = desiredTag.ftcPose.yaw;
+                if (desiredTag.ftcPose.range <= 24) {
                     if (DESIRED_TAG_ID == 583) {
                         DESIRED_TAG_ID = 585;
                     } else {
                         DESIRED_TAG_ID = 583;
                     }
+                    SEARCHING = true;
+                } else {
+                    SEARCHING = false;
                 }
 
                 // Set motor powers using the same speed calculation from demo but with Mecanum drivetrain
-                drive.setMotorPowerFromControllerVector(
-                        0,
-                        Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED)/2, //LeftY
-                        -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN)/2, //RightX
-                        1);
+                if (SEARCHING = false) {
+                    drive.setMotorPowerFromControllerVector(
+                            Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftX
+                            Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftY
+                            -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN), //RightX
+                            1);
+                }
 
             } else if (DESIRED_TAG_ID == 0) {
                 if (current_floor == FloorClassifier.FloorType.RED_TAPE) {
                     DESIRED_TAG_ID = 583;
+                    SEARCHING = true;
                 } else {
-                    drive.setMotorPowerFromControllerVector(0, 0.2, 0, 1);
+                    drive.setMotorPowerFromControllerVector(0, 0.5, 0, 1);
                 }
-            } else {
-                drive.setMotorPowerFromControllerVector(0, 0 ,0.2, 1);
+            } else if (SEARCHING = true) {
+                drive.setMotorPowerFromControllerVector(0, 0 ,0.3, 1);
             }
 
             telemetry.addData("Floor", current_floor);
+            telemetry.addData("Searching =", SEARCHING);
             telemetry.update();
         }
     }
