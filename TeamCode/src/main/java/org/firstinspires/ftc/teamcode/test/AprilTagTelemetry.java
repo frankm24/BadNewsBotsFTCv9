@@ -107,7 +107,7 @@ public final class AprilTagTelemetry extends LinearOpMode {
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         robot = new AutonomousTestingBot(hardwareMap);
         drive = robot.getDrive();
         floorClassifier = new FloorClassifier(robot.getColorSensor(), true);

@@ -47,7 +47,7 @@ public final class ColorSensorTest extends LinearOpMode {
     List<float[]> dataPoints = new ArrayList<>();
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         ModernRoboticsI2cColorSensor colorSensor = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "sensor_color");
         FloorClassifier floorClassifier = new FloorClassifier(colorSensor, true);
         waitForStart();

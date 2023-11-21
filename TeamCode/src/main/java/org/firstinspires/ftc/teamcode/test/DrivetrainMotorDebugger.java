@@ -47,7 +47,7 @@ public final class DrivetrainMotorDebugger extends LinearOpMode {
     private DcMotor back_right;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         gamepadEx1 = new GamepadEx(gamepad1);
         ftcDashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, ftcDashboard.getTelemetry());

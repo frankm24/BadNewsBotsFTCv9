@@ -16,7 +16,7 @@ import java.util.Arrays;
 public final class PipelineTest extends LinearOpMode {
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         //SignalSleeveProcessor signalSleeveProcessor = new SignalSleeveProcessor(640, 480, SignalSleeveProcessor.CameraOrientation.LEFT);
         TeamPropProcessor teamPropProcessor = new TeamPropProcessor(640, 480, TeamPropProcessor.Alliance.BLUE);
@@ -24,7 +24,7 @@ public final class PipelineTest extends LinearOpMode {
                 //.setLensIntrinsics() // Uses one from builtinwebcamcalibrations.xml if available if you do not specify your own
                 .build();
 
-        // Live view = on Robot Controller via HDMI, Camera Stream = DS
+        // Live view = on Robot Controller via HDMI, Camera Stream = DS ???
         VisionPortal visionPortal = new VisionPortal.Builder()
                 .setCamera(webcamName)
                 .setCameraResolution(new Size(640, 480))

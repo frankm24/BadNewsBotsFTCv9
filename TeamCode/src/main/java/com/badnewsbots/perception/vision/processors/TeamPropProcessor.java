@@ -16,6 +16,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.tensorflow.lite.InterpreterFactory;
+import org.tensorflow.lite.TensorFlowLite;
+import org.tensorflow.lite.support.image.TensorImage;
 
 // Based on SignalSleeveProcessor port
 public final class TeamPropProcessor implements VisionProcessor {
