@@ -2,7 +2,7 @@ package com.badnewsbots.auto;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class WaitSecondsTask implements AutonomousTask {
+public final class WaitSecondsTask implements AutonomousTask {
     private ElapsedTime elapsedTime;
     private final double waitTimeSeconds;
 

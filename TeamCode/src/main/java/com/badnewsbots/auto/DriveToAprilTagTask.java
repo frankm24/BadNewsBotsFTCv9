@@ -11,7 +11,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-public class DriveToAprilTagTask implements AutonomousTask {
+public final class DriveToAprilTagTask implements AutonomousTask {
     private final AprilTagProcessor aprilTagProcessor;
     private final MecanumDrive drive;
     private final Telemetry telemetry;
@@ -35,7 +35,7 @@ public class DriveToAprilTagTask implements AutonomousTask {
     private final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     private final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
 
-    AprilTagDetection tagDetection = null;
+    private AprilTagDetection tagDetection = null;
     private double rangeError;
     private double headingError;
     private double yawError;
@@ -63,7 +63,6 @@ public class DriveToAprilTagTask implements AutonomousTask {
             double leftY = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED) / 2;
             double rightX = -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             drive.setMotorPowerFromControllerVector(leftX, leftY, rightX, 1);
-
 
             telemetry.addData("Range error", rangeError);
             telemetry.addData("Heading error", headingError);

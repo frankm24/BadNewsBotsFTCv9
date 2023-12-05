@@ -7,13 +7,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 @TeleOp(group = "Test")
 public final class PipelineTest extends LinearOpMode {
+    private VisionPortal visionPortal;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,26 +30,76 @@ public final class PipelineTest extends LinearOpMode {
                 .build();
 
         // Live view = on Robot Controller via HDMI, Camera Stream = DS ???
-        VisionPortal visionPortal = new VisionPortal.Builder()
+        visionPortal = new VisionPortal.Builder()
                 .setCamera(webcamName)
                 .setCameraResolution(new Size(640, 480))
                 .enableLiveView(true) // Live view = on Robot Controller via HDMI, Camera Stream = DS
                 .setAutoStopLiveView(false)
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-                .addProcessor(teamPropProcessor)
+                .addProcessor(aprilTagProcessor)
                 //.addProcessor(signalSleeveProcessor) // processors added are enabled by default
                 //.addProcessor(aprilTagProcessor)
                 .build();
+        setManualExposure(3, 250);
 
         waitForStart();
         while (opModeIsActive()) {
+            /*
             if (visionPortal.getProcessorEnabled(teamPropProcessor)) {
                 telemetry.addData("Team Prop location: ", teamPropProcessor.getTeamPropLocation());
                 telemetry.addData("Team Prop filter averages: ", Arrays.toString(teamPropProcessor.getFilterCounts()));
                 telemetry.addData("FPS: ", visionPortal.getFps());
-                telemetry.update();
             }
+
+             */
+            if (visionPortal.getProcessorEnabled(aprilTagProcessor)) {
+                for (AprilTagDetection detection : aprilTagProcessor.getDetections()) {
+                    telemetry.addData("id", detection.id);
+                    telemetry.addData("Ftc pose", detection.ftcPose);
+                    telemetry.addLine("========");
+                }
+            }
+            telemetry.update();
         }
         visionPortal.close();
+    }
+
+    private void setExposureToAutomatic() {
+
+    }
+
+    private void setManualExposure(int exposureMS, int gain) {
+        // Wait for the camera to be open, then use the controls
+        if (visionPortal == null) {
+            return;
+        }
+
+        // Make sure camera is streaming before we try to set the exposure controls
+        if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            telemetry.addData("Camera", "Waiting");
+            telemetry.update();
+            while (!isStopRequested() && (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
+                sleep(20);
+            }
+            telemetry.addData("Camera", "Ready");
+            telemetry.update();
+        }
+
+        // Set camera controls unless we are stopping.
+        if (!isStopRequested())
+        {
+            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                exposureControl.setMode(ExposureControl.Mode.Manual);
+                sleep(50);
+            }
+            exposureControl.setExposure(exposureMS, TimeUnit.MILLISECONDS);
+            sleep(20);
+            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+            gainControl.setGain(gain);
+            sleep(20);
+            telemetry.addData("Camera", "Ready");
+            telemetry.update();
+        }
     }
 }

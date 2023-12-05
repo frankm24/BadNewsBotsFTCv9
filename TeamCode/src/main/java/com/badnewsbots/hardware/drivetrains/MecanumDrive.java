@@ -32,15 +32,15 @@ public class MecanumDrive implements Drive {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    public void setMotorPowerFromControllerVector(double LeftX, double LeftY, double RightX, double speedMultiplier) {
-        LeftX *= speedMultiplier;
-        LeftY *= speedMultiplier;
-        RightX *= speedMultiplier;
-        double denominator = Math.max(Math.abs(LeftY) + Math.abs(LeftX) + Math.abs(RightX), 1);
-        double front_leftPower = (LeftY + LeftX + RightX) / denominator;
-        double back_leftPower = (LeftY - LeftX + RightX) / denominator;
-        double front_rightPower = (LeftY - LeftX - RightX) / denominator;
-        double back_rightPower = (LeftY + LeftX - RightX) / denominator;
+    public void setMotorPowerFromControllerVector(double leftX, double leftY, double rightX, double speedMultiplier) {
+        leftX *= speedMultiplier;
+        leftY *= speedMultiplier;
+        rightX *= speedMultiplier;
+        double denominator = Math.max(Math.abs(leftY) + Math.abs(leftX) + Math.abs(rightX), 1);
+        double front_leftPower = (leftY + leftX + rightX) / denominator;
+        double back_leftPower = (leftY - leftX + rightX) / denominator;
+        double front_rightPower = (leftY - leftX - rightX) / denominator;
+        double back_rightPower = (leftY + leftX - rightX) / denominator;
         frontLeft.setPower(front_leftPower);
         backLeft.setPower(back_leftPower);
         frontRight.setPower(front_rightPower);
