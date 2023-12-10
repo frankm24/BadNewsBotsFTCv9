@@ -17,7 +17,7 @@ public final class WaitSecondsTask implements AutonomousTask {
     }
 
     @Override
-    public void updateTask() {}
+    public void updateTask(double deltaTime) {}
 
     public WaitSecondsTask(double waitTimeSeconds) {
         this.waitTimeSeconds = waitTimeSeconds;

@@ -4,6 +4,7 @@ import android.graphics.Paint;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -18,11 +19,16 @@ public final class AutonomousTaskSequenceRunner {
         this.telemetry = opMode.telemetry;
     }
     public void runTasks(List<AutonomousTask> taskList) {
+        ElapsedTime elapsedTime = new ElapsedTime();
+        double prevTime = elapsedTime.seconds();
         for (AutonomousTask task : taskList) {
             task.init();
             while (!task.isTaskCompleted() && opMode.opModeIsActive()) {
-                task.updateTask();
+                double currentTime = elapsedTime.seconds();
+                double deltaTime = currentTime - prevTime;
+                task.updateTask(deltaTime);
                 telemetry.update(); // Call here so you don't have a redundant update() in each task update function.
+                prevTime = currentTime;
             }
         }
     }

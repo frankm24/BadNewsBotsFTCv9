@@ -18,7 +18,7 @@ public class ResumeVisionPortalStreaming implements AutonomousTask {
     }
 
     @Override
-    public void updateTask() {
+    public void updateTask(double deltaTime) {
         taskCompleted = true;
     }
 

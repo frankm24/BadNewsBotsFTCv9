@@ -1,5 +1,6 @@
 package com.badnewsbots.auto;
 
+import com.badnewsbots.PIDController;
 import com.badnewsbots.hardware.drivetrains.MecanumDrive;
 import com.badnewsbots.perception.vision.CameraOrientation;
 import com.qualcomm.robotcore.util.Range;
@@ -29,9 +30,13 @@ public final class DriveToAprilTagTask implements AutonomousTask {
     private final double targetYaw;
     private final double yawMarginOfError;
 
-    private final double STRAFE_GAIN =  0.015 ;
-    private final double SPEED_GAIN =   0.025 ;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    private final double TURN_GAIN  =   0.015 ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    private final PIDController strafePID = new PIDController(0.01, 0.005, 0);
+    private final PIDController speedPID = new PIDController(0.02, 0.01, 0);
+    private final PIDController turnPID = new PIDController(0.01, 0.005, 0);
+
+    private final double STRAFE_GAIN =  0.01;
+    private final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    private final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     private final double MAX_AUTO_STRAFE = 0.5;
     private final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
@@ -54,7 +59,7 @@ public final class DriveToAprilTagTask implements AutonomousTask {
     }
 
     @Override
-    public void updateTask() {
+    public void updateTask(double deltaTime) {
         tagDetection = findTargetTagInFrame();
         if (tagDetection != null) {
             rangeError = tagDetection.ftcPose.range - targetRange;
@@ -63,17 +68,17 @@ public final class DriveToAprilTagTask implements AutonomousTask {
 
             double leftX = 0, leftY = 0, rightX = 0;
             if (cameraOrientation == CameraOrientation.FRONT) {
-                leftX = Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED); // strafe left and right
-                leftY = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED); // forwards and backwards
-                rightX = -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+                leftX = Range.clip(strafePID.calculate(yawError, deltaTime), -MAX_AUTO_SPEED, MAX_AUTO_SPEED); // strafe left and right
+                leftY = Range.clip(speedPID.calculate(rangeError, deltaTime) * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED); // forwards and backwards
+                rightX = -Range.clip(strafePID.calculate(headingError, deltaTime) * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             } else if (cameraOrientation == CameraOrientation.RIGHT) {
-                leftX = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                leftY = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                rightX = -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+                leftX = Range.clip(speedPID.calculate(rangeError, deltaTime), -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                leftY = Range.clip(strafePID.calculate(-yawError, deltaTime), -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                rightX = -Range.clip(turnPID.calculate(headingError, deltaTime), -MAX_AUTO_TURN, MAX_AUTO_TURN);
             } else if (cameraOrientation == CameraOrientation.LEFT) {
-                leftX = Range.clip(-rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                leftY = Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                rightX = -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+                leftX = Range.clip(speedPID.calculate(-rangeError, deltaTime), -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                leftY = Range.clip(strafePID.calculate(yawError, deltaTime), -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                rightX = -Range.clip(turnPID.calculate(headingError, deltaTime), -MAX_AUTO_TURN, MAX_AUTO_TURN);
             }
             drive.setMotorPowerFromControllerVector(leftX, leftY, rightX, 1);
             telemetry.addData("Range error", rangeError);

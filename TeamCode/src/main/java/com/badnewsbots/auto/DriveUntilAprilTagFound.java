@@ -24,7 +24,7 @@ public class DriveUntilAprilTagFound implements AutonomousTask {
     }
 
     @Override
-    public void updateTask() {
+    public void updateTask(double deltaTime) {
         tagDetection = findTargetTagInFrame();
     }
 

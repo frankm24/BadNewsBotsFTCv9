@@ -18,7 +18,7 @@ public class StopVisionPortalStreaming implements AutonomousTask {
     }
 
     @Override
-    public void updateTask() {
+    public void updateTask(double deltaTime) {
         taskCompleted = true;
     }
 
