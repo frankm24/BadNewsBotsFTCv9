@@ -11,6 +11,7 @@ import com.badnewsbots.auto.WaitSecondsTask;
 import com.badnewsbots.hardware.drivetrains.Drive;
 import com.badnewsbots.hardware.drivetrains.MecanumDrive;
 import com.badnewsbots.hardware.robots.AutonomousTestingBot;
+import com.badnewsbots.perception.vision.CameraOrientation;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -56,7 +57,7 @@ public final class AutonomousCodingTest extends LinearOpMode {
         setManualExposure(6, 250);
 
         taskList.add(new WaitSecondsTask(10));
-        taskList.add(new DriveToAprilTagTask(aprilTagProcessor, drive, telemetry, 583, 12, 0.5,
+        taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, aprilTagProcessor, drive, telemetry, 583, 12, 0.5,
                         2, 2, 0, 0));
         waitForStart();
         autonomousTaskSequenceRunner.runTasks(taskList);

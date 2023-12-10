@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import com.badnewsbots.perception.vision.CameraOrientation;
 import com.badnewsbots.util.AndroidGraphicsHelper;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
@@ -25,11 +26,6 @@ public final class SignalSleeveProcessor implements VisionProcessor {
         TWO,
         THREE,
         NONE
-    }
-
-    public enum CameraOrientation {
-        LEFT,
-        RIGHT
     }
 
     private ConeOrientation coneOrientation = ConeOrientation.NONE;

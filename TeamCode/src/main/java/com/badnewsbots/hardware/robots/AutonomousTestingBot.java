@@ -9,17 +9,20 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 public class AutonomousTestingBot implements Robot {
-    private MecanumDrive drive;
-    private WebcamName frontCamera;
-    private ModernRoboticsI2cColorSensor colorSensor;
+    private final MecanumDrive drive;
+    private final WebcamName frontCamera;
+    private final WebcamName leftCamera;
+    private final ModernRoboticsI2cColorSensor colorSensor;
 
     public AutonomousTestingBot(HardwareMap hardwareMap) {
         drive = new MecanumDrive(hardwareMap);
-        frontCamera = hardwareMap.get(WebcamName.class, "Webcam 1");
+        frontCamera = hardwareMap.get(WebcamName.class, "frontWebcam");
+        leftCamera = hardwareMap.get(WebcamName.class, "leftWebcam");
         colorSensor = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "sensor_color");
     }
 
     public WebcamName getFrontCamera() {return frontCamera;}
+    public WebcamName getLeftCamera() {return leftCamera;}
 
     @Override
     public MecanumDrive getDrive() {return drive;}

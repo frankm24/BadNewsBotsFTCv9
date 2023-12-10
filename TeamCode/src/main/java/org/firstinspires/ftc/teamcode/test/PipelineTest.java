@@ -22,7 +22,7 @@ public final class PipelineTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, "leftWebcam");
         //SignalSleeveProcessor signalSleeveProcessor = new SignalSleeveProcessor(640, 480, SignalSleeveProcessor.CameraOrientation.LEFT);
         TeamPropProcessor teamPropProcessor = new TeamPropProcessor(640, 480, TeamPropProcessor.Alliance.BLUE);
         AprilTagProcessor aprilTagProcessor = new AprilTagProcessor.Builder()
@@ -55,7 +55,9 @@ public final class PipelineTest extends LinearOpMode {
             if (visionPortal.getProcessorEnabled(aprilTagProcessor)) {
                 for (AprilTagDetection detection : aprilTagProcessor.getDetections()) {
                     telemetry.addData("id", detection.id);
-                    telemetry.addData("Ftc pose", detection.ftcPose);
+                    telemetry.addData("Ftc range", detection.ftcPose.range);
+                    telemetry.addData("Ftc bearing", detection.ftcPose.bearing);
+                    telemetry.addData("Ftc yaw", detection.ftcPose.yaw);
                     telemetry.addLine("========");
                 }
             }

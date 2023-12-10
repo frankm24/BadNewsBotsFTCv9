@@ -7,16 +7,15 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.badnewsbots.auto.AutonomousTask;
 import com.badnewsbots.auto.AutonomousTaskSequenceRunner;
 import com.badnewsbots.auto.DriveToAprilTagTask;
-import com.badnewsbots.auto.DriveUntilAprilTagFound;
-import com.badnewsbots.auto.WaitSecondsTask;
+import com.badnewsbots.auto.StopVisionPortalStreaming;
 import com.badnewsbots.hardware.drivetrains.Drive;
 import com.badnewsbots.hardware.drivetrains.MecanumDrive;
 import com.badnewsbots.hardware.robots.AutonomousTestingBot;
+import com.badnewsbots.perception.vision.CameraOrientation;
 import com.badnewsbots.perception.vision.processors.TeamPropProcessor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -30,12 +29,13 @@ import java.util.concurrent.TimeUnit;
 public final class RedAuto2 extends LinearOpMode {
 
     private final List<AutonomousTask> taskList = new ArrayList<>();
-    VisionPortal visionPortal;
-    FtcDashboard ftcDashboard;
+    private VisionPortal frontVisionPortal;
+    private VisionPortal leftVisionPortal;
+    private int[] multiPortalViewIds;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ftcDashboard = FtcDashboard.getInstance();
+        FtcDashboard ftcDashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, ftcDashboard.getTelemetry());
         telemetry.setMsTransmissionInterval(17); // smooooooth data
 
@@ -44,32 +44,59 @@ public final class RedAuto2 extends LinearOpMode {
         AutonomousTaskSequenceRunner autonomousTaskSequenceRunner = new AutonomousTaskSequenceRunner(this);
         // Needed for opMode context to call opModeIsActive() in loop
 
+        multiPortalViewIds = VisionPortal.makeMultiPortalView(2, VisionPortal.MultiPortalLayout.HORIZONTAL);
+
         TeamPropProcessor teamPropProcessor = new TeamPropProcessor(640, 480, TeamPropProcessor.Alliance.RED);
         AprilTagProcessor aprilTagProcessor = new AprilTagProcessor.Builder().build();
         aprilTagProcessor.setDecimation(2);
-        visionPortal = new VisionPortal.Builder()
+
+        frontVisionPortal = new VisionPortal.Builder()
                 .setCamera(robot.getFrontCamera())
-                .addProcessor(aprilTagProcessor)
                 .addProcessor(teamPropProcessor)
                 .setCameraResolution(new Size(640, 480)) // Default resolution but just being explicit
                 .enableLiveView(true) // Live view = on Robot Controller via HDMI, Camera Stream = DS
-                .setAutoStopLiveView(false)
+                .setAutoStopLiveView(true)
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
+                .setLiveViewContainerId(multiPortalViewIds[0])
+                .build();
+        leftVisionPortal = new VisionPortal.Builder()
+                .setCamera(robot.getLeftCamera())
+                .addProcessor(aprilTagProcessor)
+                .setCameraResolution(new Size(640, 480)) // Default resolution but just being explicit
+                .enableLiveView(true) // Live view = on Robot Controller via HDMI, Camera Stream = DS
+                .setAutoStopLiveView(true)
+                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
+                .setLiveViewContainerId(multiPortalViewIds[1])
                 .build();
 
-        setManualExposure(6, 250);
+        setManualExposure(leftVisionPortal,6, 250);
+        leftVisionPortal.stopStreaming();
 
-        taskList.add(new DriveUntilAprilTagFound(aprilTagProcessor, drive,4,0.5,0,0,1));
+        TeamPropProcessor.TeamPropLocation location = TeamPropProcessor.TeamPropLocation.NONE;
+        taskList.add(new StopVisionPortalStreaming(frontVisionPortal));
 
-        waitForStart();
-        TeamPropProcessor.TeamPropLocation location = teamPropProcessor.getTeamPropLocation();
+        while (!isStarted() && !isStopRequested()) {
+            location = teamPropProcessor.getTeamPropLocation();
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("Front Camera State", frontVisionPortal.getCameraState());
+            telemetry.addData("Left Camera State", leftVisionPortal.getCameraState());
+            telemetry.addData("Team Prop Location", location);
+            telemetry.update();
+        }
+
+        frontVisionPortal.stopStreaming();
+        leftVisionPortal.resumeStreaming();
+
+        location = TeamPropProcessor.TeamPropLocation.LEFT;
+
         switch (location) {
             case LEFT:
-                return;
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 35.7, 0.1, -5.86, 0.05, 0, 0.1));
+                break;
             case CENTER:
-                return;
+                break;
             case RIGHT:
-                return;
+                break;
         }
         autonomousTaskSequenceRunner.runTasks(taskList);
     }
@@ -77,7 +104,7 @@ public final class RedAuto2 extends LinearOpMode {
      Manually set the camera gain and exposure.
      This can only be called AFTER calling initAprilTag(), and only works for Webcams;
     */
-    private void setManualExposure(int exposureMS, int gain) {
+    private void setManualExposure(VisionPortal visionPortal, int exposureMS, int gain) {
         // Wait for the camera to be open, then use the controls
         if (visionPortal == null) {
             return;
