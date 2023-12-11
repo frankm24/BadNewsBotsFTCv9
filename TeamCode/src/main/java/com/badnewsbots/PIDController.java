@@ -17,7 +17,7 @@ public class PIDController {
     public double calculate(double error, double deltaTime) {
         integral += error * deltaTime;
         double derivative = (error - previousError) / deltaTime;
-        double output = kp * error + ki * integral + ki * derivative;
+        double output = kp * error + ki * integral + kd * derivative;
 
         previousError = error;
         return output;
