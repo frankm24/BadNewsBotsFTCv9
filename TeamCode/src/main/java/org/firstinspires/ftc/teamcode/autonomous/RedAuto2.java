@@ -91,7 +91,7 @@ public final class RedAuto2 extends LinearOpMode {
 
         switch (location) {
             case LEFT:
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, /*6*/585, 35.7, 1, -5.86, 3, 0, 3));
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 35.7, 1, -5.86, 3, 0, 3));
                 break;
             case CENTER:
                 break;
