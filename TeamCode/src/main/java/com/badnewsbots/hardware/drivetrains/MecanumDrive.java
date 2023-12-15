@@ -12,18 +12,18 @@ public class MecanumDrive implements Drive {
     private DcMotorEx frontRight;
 
     public MecanumDrive(HardwareMap hardwareMap) {
-        // Enables automatic "bulk reads" from robot hardware, so multiple .get()'s on hardware
+        // Enables automatic "bulk reads" from robot hardware, so multiple .get()'s on motors become one call
         // Should improve performance significantly, since hardwareMap read calls take 2ms each
-        for (LynxModule module : hardwareMap.getAll( LynxModule.class ) )
-            module.setBulkCachingMode( LynxModule.BulkCachingMode.AUTO );
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class))
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
-        backLeft = hardwareMap.get(DcMotorEx.class, "leftBack_drive");
-        frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront_drive");
-        backRight = hardwareMap.get(DcMotorEx.class, "rightBack_drive");
-        frontRight = hardwareMap.get(DcMotorEx.class, "rightFront_drive");
+        backLeft = hardwareMap.get(DcMotorEx.class, "back_left");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "front_left");
+        backRight = hardwareMap.get(DcMotorEx.class, "back_right");
+        frontRight = hardwareMap.get(DcMotorEx.class, "front_right");
 
         // To drive forward, most robots need the motor on one side to be reversed because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.

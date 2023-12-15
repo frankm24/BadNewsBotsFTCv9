@@ -6,12 +6,13 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.badnewsbots.auto.AutonomousTask;
 import com.badnewsbots.auto.AutonomousTaskSequenceRunner;
+import com.badnewsbots.auto.DashboardViewableConstants;
 import com.badnewsbots.auto.DriveToAprilTagTask;
 import com.badnewsbots.auto.StopVisionPortalStreaming;
-import com.badnewsbots.hardware.drivetrains.Drive;
 import com.badnewsbots.hardware.drivetrains.MecanumDrive;
 import com.badnewsbots.hardware.robots.AutonomousTestingBot;
 import com.badnewsbots.perception.vision.CameraOrientation;
+import com.badnewsbots.perception.vision.processors.FTCDashboardCameraStreamProcessor;
 import com.badnewsbots.perception.vision.processors.TeamPropProcessor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -46,6 +47,7 @@ public final class RedAuto2 extends LinearOpMode {
 
         multiPortalViewIds = VisionPortal.makeMultiPortalView(2, VisionPortal.MultiPortalLayout.HORIZONTAL);
 
+        FTCDashboardCameraStreamProcessor cameraStreamProcessor = new FTCDashboardCameraStreamProcessor();
         TeamPropProcessor teamPropProcessor = new TeamPropProcessor(640, 480, TeamPropProcessor.Alliance.RED);
         AprilTagProcessor aprilTagProcessor = new AprilTagProcessor.Builder().build();
         aprilTagProcessor.setDecimation(2);
@@ -59,9 +61,11 @@ public final class RedAuto2 extends LinearOpMode {
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
                 .setLiveViewContainerId(multiPortalViewIds[0])
                 .build();
+
         leftVisionPortal = new VisionPortal.Builder()
                 .setCamera(robot.getLeftCamera())
                 .addProcessor(aprilTagProcessor)
+                .addProcessor(cameraStreamProcessor)
                 .setCameraResolution(new Size(640, 480)) // Default resolution but just being explicit
                 .enableLiveView(true) // Live view = on Robot Controller via HDMI, Camera Stream = DS
                 .setAutoStopLiveView(true)
@@ -69,7 +73,9 @@ public final class RedAuto2 extends LinearOpMode {
                 .setLiveViewContainerId(multiPortalViewIds[1])
                 .build();
 
-        setManualExposure(leftVisionPortal,6, 250);
+        setManualExposure(leftVisionPortal, DashboardViewableConstants.exposureTimeMs, DashboardViewableConstants.gain);
+        ftcDashboard.startCameraStream(cameraStreamProcessor, 30);
+
         leftVisionPortal.stopStreaming();
 
         TeamPropProcessor.TeamPropLocation location = TeamPropProcessor.TeamPropLocation.NONE;
@@ -81,17 +87,24 @@ public final class RedAuto2 extends LinearOpMode {
             telemetry.addData("Front Camera State", frontVisionPortal.getCameraState());
             telemetry.addData("Left Camera State", leftVisionPortal.getCameraState());
             telemetry.addData("Team Prop Location", location);
+            // To trick FTC Dashboard to let us start graph sooner
+            telemetry.addData("Range error", 0);
+            telemetry.addData("Heading error", 0);
+            telemetry.addData("Yaw error", 0);
+            telemetry.addData("Left X", 0);
+            telemetry.addData("Left Y", 0);
+            telemetry.addData("Right X", 0);
             telemetry.update();
         }
 
         frontVisionPortal.stopStreaming();
         leftVisionPortal.resumeStreaming();
 
-        location = TeamPropProcessor.TeamPropLocation.LEFT;
+        location = TeamPropProcessor.TeamPropLocation.LEFT; // hard coded for now
 
         switch (location) {
             case LEFT:
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, /*6*/585, 35.7, 1, -5.86, 3, 0, 3));
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 35.7, 1, -5.86, 3, 0, 3));
                 break;
             case CENTER:
                 break;

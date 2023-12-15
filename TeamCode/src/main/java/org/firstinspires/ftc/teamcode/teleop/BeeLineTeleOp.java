@@ -30,7 +30,7 @@ public final class BeeLineTeleOp extends LinearOpMode {
     private GamepadEx smartGamepad;
 
     private void mainLoop() {
-        double prevTime = 0;
+        double prevTime = getRuntime();
         while (opModeIsActive()) {
             double currentTime = getRuntime();
             double deltaTime = currentTime - prevTime;
