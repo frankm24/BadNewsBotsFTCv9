@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public final class DashboardViewableConstants {
+    // Be sure to disable dashboard using the "Enable/Disable Dashboard" OpMode during a match
     public static double kPStrafe = 0.025;
     public static double kIStrafe = 0.001;
     public static double kDStrafe = 0.005;

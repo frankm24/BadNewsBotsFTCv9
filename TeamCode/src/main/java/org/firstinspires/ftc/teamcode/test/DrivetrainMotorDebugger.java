@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(group = "Test")
 public final class DrivetrainMotorDebugger extends LinearOpMode {
     private FtcDashboard ftcDashboard;
-    private GamepadEx gamepadEx1;
+    private GamepadEx gamepadEx1; // switch back right and back left
     private DcMotor front_left;
     private DcMotor back_left;
     private DcMotor front_right;

@@ -20,7 +20,7 @@ public class DriveUntilAprilTagFound implements AutonomousTask {
 
     @Override
     public void init() {
-        drive.setMotorPowerFromControllerVector(leftX, leftY, rightX, speedMultiplier);
+        drive.setMotorPowerFromGamepadVector(leftX, leftY, rightX, speedMultiplier);
     }
 
     @Override

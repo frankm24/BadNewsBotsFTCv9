@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 // This assumes the servo is not running in continous mode (goBilda servos only)
 // Needs to be tested with a servo to ensure it works correctly.
 // Degrees behavior: The position the servo is set to during the init phase will
-
+// Todo: THIS CLASS HAS NEVER BEEN TESTED EVER ONCE
 public class TimeBasedServoController {
     private final Servo servo;
     private final double rotationSpeedSecondsPerDegree; // needs to be a highly accurate measured value, not human guesstimate
@@ -42,10 +42,10 @@ public class TimeBasedServoController {
     }
 
     public void goToPositionDegreesSync(double desiredPositionDegrees) {
+        currentState = ServoState.MOVING_TO_POSITION;
         desiredPositionDegrees += referencePositionDegrees;
         servo.setPosition(desiredPositionDegrees / maxRotationDegrees);
         double absChangeInDegrees = Math.abs(desiredPositionDegrees - currentPositionDegrees);
-        currentState = ServoState.MOVING_TO_POSITION;
         try {
             Thread.sleep( (long) (absChangeInDegrees * (1 * 1E3) * rotationSpeedSecondsPerDegree) );
             // Wait until we estimate servo has reached desired position. (ms)

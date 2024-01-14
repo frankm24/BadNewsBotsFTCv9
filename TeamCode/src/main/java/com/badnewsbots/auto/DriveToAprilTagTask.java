@@ -10,7 +10,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
-
+// Autonomous task for driving towards a desired position relative to an AprilTag of a specific ID.
 public final class DriveToAprilTagTask implements AutonomousTask {
     private final CameraOrientation cameraOrientation;
     private final AprilTagProcessor aprilTagProcessor;
@@ -39,14 +39,16 @@ public final class DriveToAprilTagTask implements AutonomousTask {
 
     @Override
     public boolean isTaskCompleted() {
+        // if the tag is not visible, we cannot know if we are at the desired position or not, so return false (not completed).
         if (tagDetection == null) return false;
+        // if we are within the margin of error, shut off all power to the motors and return true (completed) so the next task can be performed.
         if ((Math.abs(rangeError) <= rangeMarginOfError) && (Math.abs(headingError) <= headingMarginOfError) && (Math.abs(yawError)<= yawMarginOfError)) {
-            drive.setMotorPowerFromControllerVector(0,0,0,1);
+            drive.setMotorPowerFromGamepadVector(0,0,0,1);
             return true;
         }
         return false;
     }
-
+    // No code needed when the task is initialized.
     @Override
     public void init() {
 
@@ -55,11 +57,18 @@ public final class DriveToAprilTagTask implements AutonomousTask {
     @Override
     public void updateTask(double deltaTime) {
         tagDetection = findTargetTagInFrame();
+        // If the desired tag is visible, we can update the drive motors to minimize our position error.
         if (tagDetection != null) {
+            // A position relative to the AprilTag is defined by three numbers: range, heading, and yaw. For an explanation, read
+            // the following document: https://ftc-docs.firstinspires.org/en/latest/apriltag/understanding_apriltag_detection_values/understanding-apriltag-detection-values.html
+            // Note that range and heading could theoretically be swapped for cartesian field coordinates, but it requires different
+            // PID control and movement code and we have never tested it.
             rangeError = tagDetection.ftcPose.range - targetRange;
             headingError = tagDetection.ftcPose.bearing - targetHeading;
             yawError = tagDetection.ftcPose.yaw - targetYaw;
 
+            // Our code to drive on the AprilTag detection depends on the camera's frame of reference. If the camera is facing
+            // towards the right or left (90 deg from the robot heading), then we have to rotate the movement to get the correct commands.
             double leftX = 0, leftY = 0, rightX = 0;
             if (cameraOrientation == CameraOrientation.FRONT) {
                 leftX = Range.clip(strafePID.calculate(yawError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed); // strafe left and right
@@ -74,7 +83,7 @@ public final class DriveToAprilTagTask implements AutonomousTask {
                 leftY = Range.clip(strafePID.calculate(yawError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed);
                 rightX = -Range.clip(turnPID.calculate(headingError, deltaTime), -DashboardViewableConstants.maxAutoTurn, DashboardViewableConstants.maxAutoTurn);
             }
-            drive.setMotorPowerFromControllerVector(leftX, leftY, rightX, 1);
+            drive.setMotorPowerFromGamepadVector(leftX, leftY, rightX, 1);
             telemetry.addData("Range error", rangeError);
             telemetry.addData("Heading error", headingError);
             telemetry.addData("Yaw error", yawError);
@@ -100,7 +109,8 @@ public final class DriveToAprilTagTask implements AutonomousTask {
         this.targetYaw = targetYaw;
         this.yawMarginOfError = yawMarginOfError;
     }
-
+    // Look for the AprilTag of the desired tag ID in list of currently detected AprilTags in the latest image.
+    // processed by the AprilTagProcessor. If no tag of the right ID was found, returns null.
     private AprilTagDetection findTargetTagInFrame() {
         // Step through the list of detected tags and look for a matching tag
         List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();

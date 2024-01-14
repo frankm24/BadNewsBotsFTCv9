@@ -174,14 +174,14 @@ public final class AutonomousDrivingTest extends LinearOpMode {
                 }*/
 
                 // Set motor powers using the same speed calculation from demo but with Mecanum drivetrain
-                drive.setMotorPowerFromControllerVector(
+                drive.setMotorPowerFromGamepadVector(
                         Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE), //LeftX
                         Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftY
                         -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN)*2, //RightX
                         1);
 
             } else { // If target not found, spin and keep looking
-                drive.setMotorPowerFromControllerVector(0, 0 ,0.3, 1);
+                drive.setMotorPowerFromGamepadVector(0, 0 ,0.3, 1);
                 visionPortal.saveNextFrameRaw("/Pictures/" + savedFrames);
                 savedFrames++;
             }

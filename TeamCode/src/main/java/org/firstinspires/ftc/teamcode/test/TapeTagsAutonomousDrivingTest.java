@@ -189,7 +189,7 @@ public final class TapeTagsAutonomousDrivingTest extends LinearOpMode {
 
                 // Set motor powers using the same speed calculation from demo but with Mecanum drivetrain
                 if (SEARCHING = false) {
-                    drive.setMotorPowerFromControllerVector(
+                    drive.setMotorPowerFromGamepadVector(
                             Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftX
                             Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED), //LeftY
                             -Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN), //RightX
@@ -201,10 +201,10 @@ public final class TapeTagsAutonomousDrivingTest extends LinearOpMode {
                     DESIRED_TAG_ID = 583;
                     SEARCHING = true;
                 } else {
-                    drive.setMotorPowerFromControllerVector(0, 0.5, 0, 1);
+                    drive.setMotorPowerFromGamepadVector(0, 0.5, 0, 1);
                 }
             } else if (SEARCHING = true) {
-                drive.setMotorPowerFromControllerVector(0, 0 ,0.3, 1);
+                drive.setMotorPowerFromGamepadVector(0, 0 ,0.3, 1);
             }
 
             telemetry.addData("Floor", current_floor);
