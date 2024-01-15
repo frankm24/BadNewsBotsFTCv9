@@ -18,7 +18,8 @@ public final class CenterstageTeleOp extends LinearOpMode {
     public static double turnCenterPos = 0.5;
     public static double turnRightPos = 0.7;
     public static double grabbyOpenPos = 0.6;
-    public static double grabbyClosedPos = 0.5;
+    public static double grabbyClosedPos1Px = 0.5;
+    public static double grabbyClosedPos2Px = 0.4;
 
     private CenterstageCompBot robot;
     private GamepadEx gamepadEx1;
@@ -28,7 +29,8 @@ public final class CenterstageTeleOp extends LinearOpMode {
     private Servo grabbyServo;
     private enum GrabbyPosition {
         OPEN,
-        CLOSED
+        CLOSED1PX,
+        CLOSED2PX
     }
     private GrabbyPosition currentGrabbyPosition = GrabbyPosition.OPEN;
 
@@ -83,22 +85,31 @@ public final class CenterstageTeleOp extends LinearOpMode {
         drive.setMotorPowerFromGamepadVector(leftStickX, leftStickY, rightStickX, 1);
 
         pud.update(deltaTime);
-        if (gamepadEx1.xPressed()) {
+        if (gamepadEx1.dpadLeftPressed()) {
             turnServo.setPosition(turnLeftPos);
         }
-        if (gamepadEx1.yPressed()) {
+        if (gamepadEx1.dpadUpPressed()) {
             turnServo.setPosition(turnCenterPos);
         }
-        if (gamepadEx1.bPressed()) {
+        if (gamepadEx1.dpadRightPressed()) {
             turnServo.setPosition(turnRightPos);
         }
         if (gamepadEx1.aPressed()) {
-            if (currentGrabbyPosition == GrabbyPosition.CLOSED) {
+            if (currentGrabbyPosition == GrabbyPosition.CLOSED2PX) {
                 grabbyServo.setPosition(grabbyOpenPos);
                 currentGrabbyPosition = GrabbyPosition.OPEN;
             } else {
-                grabbyServo.setPosition(grabbyClosedPos);
-                currentGrabbyPosition = GrabbyPosition.CLOSED;
+                grabbyServo.setPosition(grabbyClosedPos2Px);
+                currentGrabbyPosition = GrabbyPosition.CLOSED2PX;
+            }
+        }
+        if (gamepadEx1.bPressed()) {
+            if (currentGrabbyPosition == GrabbyPosition.CLOSED1PX) {
+                grabbyServo.setPosition(grabbyOpenPos);
+                currentGrabbyPosition = GrabbyPosition.OPEN;
+            } else {
+                grabbyServo.setPosition(grabbyClosedPos1Px);
+                currentGrabbyPosition = GrabbyPosition.CLOSED1PX;
             }
         }
     }
