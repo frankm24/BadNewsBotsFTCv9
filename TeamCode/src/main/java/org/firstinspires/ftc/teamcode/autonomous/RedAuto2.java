@@ -103,12 +103,15 @@ public final class RedAuto2 extends LinearOpMode {
         location = TeamPropProcessor.TeamPropLocation.LEFT; // hard coded for now
 
         switch (location) {
-            case LEFT:
+            case RIGHT:
                 taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 35.7, 1, -5.86, 3, 0, 3));
                 break;
             case CENTER:
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 10.5, 1, -5.17, 3, 1.5, 3));
                 break;
-            case RIGHT:
+            case LEFT:
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 8.7, 1, 4.6, 3, -0.2, 3));
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 16, 1, -14.1, 3, -19.5, 3));
                 break;
         }
         autonomousTaskSequenceRunner.runTasks(taskList);
