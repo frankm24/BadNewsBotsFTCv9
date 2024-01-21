@@ -16,7 +16,7 @@ import java.util.Hashtable;
 public final class PUD {
     private final Telemetry telemetry;
     private final DcMotorEx armMotor;
-    private final TimeBasedServoController grabbyController;
+    //private final TimeBasedServoController grabbyController;
     private final Servo grabbyServo;
     private final Servo turnServo;
     private final LimitSwitchEx zeroLimitSwitch;
@@ -72,7 +72,7 @@ public final class PUD {
 
         grabbyServo = hardwareMap.get(Servo.class, "grabby_servo");
         turnServo = hardwareMap.get(Servo.class, "turn_servo");
-        grabbyController = new TimeBasedServoController(grabbyServo, 0.1, 300,0);
+        //grabbyController = new TimeBasedServoController(grabbyServo, 0.1, 300,0);
         grabbyPositionsTable.put(TurnPosition.LEFT, 0d);
         grabbyPositionsTable.put(TurnPosition.CENTERED, 150d);
         grabbyPositionsTable.put(TurnPosition.RIGHT, 300d);
@@ -84,7 +84,7 @@ public final class PUD {
     }
 
     public TurnPosition getCurrentTurnPosition() {return currentTurnPosition;}
-
+    /*
     public void setGrabbyPositionAsync(TurnPosition desiredPosition) {
         grabbyController.goToPositionDegreesAsync(grabbyPositionsTable.get(desiredPosition));
         final Thread thread = new Thread(() -> {
@@ -100,7 +100,7 @@ public final class PUD {
         grabbyController.goToPositionDegreesSync(grabbyPositionsTable.get(desiredPosition));
         currentTurnPosition = desiredPosition;
     }
-
+    */
     public void update(double deltaTime) {
         zeroLimitSwitch.update();
         endLimitSwitch.update();
