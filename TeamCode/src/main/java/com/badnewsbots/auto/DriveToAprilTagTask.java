@@ -2,6 +2,7 @@ package com.badnewsbots.auto;
 
 import com.badnewsbots.PIDController;
 import com.badnewsbots.hardware.drivetrains.MecanumDrive;
+import com.badnewsbots.hardware.robots.CenterstageCompBot;
 import com.badnewsbots.perception.vision.CameraOrientation;
 import com.qualcomm.robotcore.util.Range;
 
@@ -28,9 +29,9 @@ public final class DriveToAprilTagTask implements AutonomousTask {
     private final double targetYaw;
     private final double yawMarginOfError;
 
-    private final PIDController strafePID = new PIDController(DashboardViewableConstants.kPStrafe, DashboardViewableConstants.kIStrafe, DashboardViewableConstants.kDStrafe);
-    private final PIDController speedPID = new PIDController(DashboardViewableConstants.kPSpeed, DashboardViewableConstants.kISpeed, DashboardViewableConstants.kDSpeed);
-    private final PIDController turnPID = new PIDController(DashboardViewableConstants.kPTurn, DashboardViewableConstants.kITurn, DashboardViewableConstants.kDTurn);
+    private final PIDController strafePID;
+    private final PIDController speedPID;
+    private final PIDController turnPID;
 
     private AprilTagDetection tagDetection = null;
     private double rangeError;
@@ -71,17 +72,17 @@ public final class DriveToAprilTagTask implements AutonomousTask {
             // towards the right or left (90 deg from the robot heading), then we have to rotate the movement to get the correct commands.
             double leftX = 0, leftY = 0, rightX = 0;
             if (cameraOrientation == CameraOrientation.FRONT) {
-                leftX = Range.clip(strafePID.calculate(yawError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed); // strafe left and right
-                leftY = Range.clip(speedPID.calculate(rangeError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed); // forwards and backwards
-                rightX = -Range.clip(strafePID.calculate(headingError, deltaTime), -DashboardViewableConstants.maxAutoTurn, DashboardViewableConstants.maxAutoTurn);
+                leftX = Range.clip(strafePID.calculate(yawError, deltaTime), -CenterstageCompBot.maxAutoSpeed, CenterstageCompBot.maxAutoSpeed); // strafe left and right
+                leftY = Range.clip(speedPID.calculate(rangeError, deltaTime), -CenterstageCompBot.maxAutoSpeed, CenterstageCompBot.maxAutoSpeed); // forwards and backwards
+                rightX = -Range.clip(strafePID.calculate(headingError, deltaTime), -CenterstageCompBot.maxAutoTurn, CenterstageCompBot.maxAutoTurn);
             } else if (cameraOrientation == CameraOrientation.RIGHT) {
-                leftX = Range.clip(speedPID.calculate(rangeError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed);
-                leftY = Range.clip(strafePID.calculate(-yawError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed);
-                rightX = -Range.clip(turnPID.calculate(headingError, deltaTime), -DashboardViewableConstants.maxAutoTurn, DashboardViewableConstants.maxAutoTurn);
+                leftX = Range.clip(speedPID.calculate(rangeError, deltaTime), -CenterstageCompBot.maxAutoSpeed, CenterstageCompBot.maxAutoSpeed);
+                leftY = Range.clip(strafePID.calculate(-yawError, deltaTime), -CenterstageCompBot.maxAutoSpeed, CenterstageCompBot.maxAutoSpeed);
+                rightX = -Range.clip(turnPID.calculate(headingError, deltaTime), -CenterstageCompBot.maxAutoTurn, CenterstageCompBot.maxAutoTurn);
             } else if (cameraOrientation == CameraOrientation.LEFT) {
-                leftX = Range.clip(speedPID.calculate(-rangeError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed);
-                leftY = Range.clip(strafePID.calculate(yawError, deltaTime), -DashboardViewableConstants.maxAutoSpeed, DashboardViewableConstants.maxAutoSpeed);
-                rightX = -Range.clip(turnPID.calculate(headingError, deltaTime), -DashboardViewableConstants.maxAutoTurn, DashboardViewableConstants.maxAutoTurn);
+                leftX = Range.clip(speedPID.calculate(-rangeError, deltaTime), -CenterstageCompBot.maxAutoSpeed, CenterstageCompBot.maxAutoSpeed);
+                leftY = Range.clip(strafePID.calculate(yawError, deltaTime), -CenterstageCompBot.maxAutoSpeed, CenterstageCompBot.maxAutoSpeed);
+                rightX = -Range.clip(turnPID.calculate(headingError, deltaTime), -CenterstageCompBot.maxAutoTurn, CenterstageCompBot.maxAutoTurn);
             }
             drive.setMotorPowerFromGamepadVector(leftX, leftY, rightX, 1);
             telemetry.addData("Range error", rangeError);
@@ -108,6 +109,9 @@ public final class DriveToAprilTagTask implements AutonomousTask {
         this.headingMarginOfError = bearingMarginOfError;
         this.targetYaw = targetYaw;
         this.yawMarginOfError = yawMarginOfError;
+        this.strafePID = new PIDController(CenterstageCompBot.kPStrafe, CenterstageCompBot.kIStrafe, CenterstageCompBot.kDStrafe);
+        this.speedPID = new PIDController(CenterstageCompBot.kPSpeed, CenterstageCompBot.kISpeed, CenterstageCompBot.kDSpeed);
+        this.turnPID = new PIDController(CenterstageCompBot.kPTurn, CenterstageCompBot.kITurn, CenterstageCompBot.kDTurn);
     }
     // Look for the AprilTag of the desired tag ID in list of currently detected AprilTags in the latest image.
     // processed by the AprilTagProcessor. If no tag of the right ID was found, returns null.

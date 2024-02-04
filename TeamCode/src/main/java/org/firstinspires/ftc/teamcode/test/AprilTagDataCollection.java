@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.test;
 
 import android.util.Size;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.badnewsbots.hardware.robots.CenterstageCompBot;
 import com.badnewsbots.hardware.drivetrains.MecanumDrive;
 import com.badnewsbots.hardware.robots.AutonomousTestingBot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -17,12 +19,13 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Config
 @Autonomous
 public final class AprilTagDataCollection extends LinearOpMode {
     private AutonomousTestingBot robot;
     private MecanumDrive drive;
 
-    private final int DESIRED_TAG_ID = 585;    // Choose the tag you want to approach or set to -1 for ANY tag.
+    public static int DESIRED_TAG_ID = 6;    // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -37,7 +40,7 @@ public final class AprilTagDataCollection extends LinearOpMode {
         // Initialize the VisionPortal with an AprilTagProcessor
         initAprilTag();
 
-        setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+        setManualExposure(CenterstageCompBot.exposureTimeMs, CenterstageCompBot.gain);  // Use low exposure time to reduce motion blur
 
         // Confirm we are ready and wait for the driver to press Start
         telemetry.addData("Status", "Initialized");

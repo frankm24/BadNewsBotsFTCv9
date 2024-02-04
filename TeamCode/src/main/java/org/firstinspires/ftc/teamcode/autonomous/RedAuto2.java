@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.badnewsbots.auto.AutonomousTask;
 import com.badnewsbots.auto.AutonomousTaskSequenceRunner;
-import com.badnewsbots.auto.DashboardViewableConstants;
+import com.badnewsbots.auto.WaitSecondsTask;
+import com.badnewsbots.hardware.robots.CenterstageCompBot;
 import com.badnewsbots.auto.DriveToAprilTagTask;
 import com.badnewsbots.auto.StopVisionPortalStreaming;
 import com.badnewsbots.hardware.drivetrains.MecanumDrive;
@@ -26,9 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Config
 @Autonomous
 public final class RedAuto2 extends LinearOpMode {
-
+    public static boolean visionBased = false;
     private final List<AutonomousTask> taskList = new ArrayList<>();
     private VisionPortal frontVisionPortal;
     private VisionPortal leftVisionPortal;
@@ -73,7 +76,7 @@ public final class RedAuto2 extends LinearOpMode {
                 .setLiveViewContainerId(multiPortalViewIds[1])
                 .build();
 
-        setManualExposure(leftVisionPortal, DashboardViewableConstants.exposureTimeMs, DashboardViewableConstants.gain);
+        setManualExposure(leftVisionPortal, CenterstageCompBot.exposureTimeMs, CenterstageCompBot.gain);
         ftcDashboard.startCameraStream(cameraStreamProcessor, 30);
 
         leftVisionPortal.stopStreaming();
@@ -102,17 +105,31 @@ public final class RedAuto2 extends LinearOpMode {
 
         location = TeamPropProcessor.TeamPropLocation.RIGHT; // hard coded for now
 
-        switch (location) {
-            case RIGHT:
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 35.7, 1, -5.86, 3, 0, 3));
-                break;
-            case CENTER:
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 10.5, 1, -5.17, 3, 1.5, 3));
-                break;
-            case LEFT:
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 8.7, 1, 4.6, 3, -0.2, 3));
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 16, 1, -14.1, 3, -19.5, 3));
-                break;
+        if (visionBased) {
+            switch (location) {
+                case RIGHT:
+                    taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 35.7, 1, -5.86, 3, 0, 3));
+                    break;
+                case CENTER:
+                    taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 10.5, 1, -5.17, 3, 1.5, 3));
+                    break;
+                case LEFT:
+                    taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 8.7, 1, 4.6, 3, -0.2, 3));
+                    taskList.add(new DriveToAprilTagTask(CameraOrientation.RIGHT, aprilTagProcessor, drive, telemetry, 6, 16, 1, -14.1, 3, -19.5, 3));
+                    break;
+            }
+        } else {
+            switch (location) {
+                case RIGHT:
+                    taskList.add(new WaitSecondsTask(1));
+                    break;
+                case CENTER:
+                    taskList.add(new WaitSecondsTask(1));
+                    break;
+                case LEFT:
+                    taskList.add(new WaitSecondsTask(1));
+                    break;
+            }
         }
         autonomousTaskSequenceRunner.runTasks(taskList);
     }
@@ -145,7 +162,7 @@ public final class RedAuto2 extends LinearOpMode {
                 exposureControl.setMode(ExposureControl.Mode.Manual);
                 sleep(50);
             }
-            exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+            exposureControl.setExposure(exposureMS, TimeUnit.MILLISECONDS);
             sleep(20);
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(gain);
