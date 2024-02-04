@@ -12,6 +12,22 @@ public class MecanumDrive implements Drive {
     private DcMotorEx backRight;
     private DcMotorEx frontRight;
 
+    public double getFrontLeftPosition() {
+        return frontLeft.getCurrentPosition();
+    }
+
+    public double getBackLeftPosition() {
+        return backLeft.getCurrentPosition();
+    }
+
+    public double getFrontRightPosition() {
+        return frontRight.getCurrentPosition();
+    }
+
+    public double getBackRightPosition() {
+        return backRight.getCurrentPosition();
+    }
+
     public MecanumDrive(HardwareMap hardwareMap) {
         // Enables automatic "bulk reads" from robot hardware, so multiple .get()'s on motor encoders become one call
         // Should improve performance significantly if using encoders for autonomous, since hardwareMap read calls take 2ms each

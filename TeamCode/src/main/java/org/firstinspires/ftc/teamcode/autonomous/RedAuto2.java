@@ -106,7 +106,7 @@ public final class RedAuto2 extends LinearOpMode {
         frontVisionPortal.stopStreaming();
         leftVisionPortal.resumeStreaming();
 
-        location = TeamPropProcessor.TeamPropLocation.LEFT; // hard coded for now
+        location = TeamPropProcessor.TeamPropLocation.RIGHT; // hard coded for now
 
         if (visionBased) {
             switch (location) {
