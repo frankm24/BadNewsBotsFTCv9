@@ -7,10 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.badnewsbots.auto.AutonomousTask;
 import com.badnewsbots.auto.AutonomousTaskSequenceRunner;
-<<<<<<< Updated upstream
 import com.badnewsbots.auto.WaitSecondsTask;
-=======
->>>>>>> Stashed changes
 import com.badnewsbots.hardware.robots.CenterstageCompBot;
 import com.badnewsbots.auto.DriveToAprilTagTask;
 import com.badnewsbots.auto.StopVisionPortalStreaming;
@@ -124,7 +121,6 @@ public final class RedAuto2 extends LinearOpMode {
         } else {
             switch (location) {
                 case RIGHT:
-<<<<<<< Updated upstream
                     taskList.add(new WaitSecondsTask(1));
                     break;
                 case CENTER:
@@ -132,15 +128,6 @@ public final class RedAuto2 extends LinearOpMode {
                     break;
                 case LEFT:
                     taskList.add(new WaitSecondsTask(1));
-=======
-                    taskList.add();
-                    break;
-                case CENTER:
-                    taskList.add();
-                    break;
-                case LEFT:
-                    taskList.add();
->>>>>>> Stashed changes
                     break;
             }
         }

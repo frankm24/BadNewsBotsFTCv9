@@ -59,12 +59,9 @@ public final class CenterstageTeleOp extends LinearOpMode {
         }
     }
 
-<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/teleop/CenterstageTeleOp.java
+
     private void init(double deltaTime) {
         pud.init();
-=======
-    private void initLoop(double deltaTime) {
->>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/test/CenterstageTeleOp.java
     }
 
     private void initLoop(double deltaTime) {

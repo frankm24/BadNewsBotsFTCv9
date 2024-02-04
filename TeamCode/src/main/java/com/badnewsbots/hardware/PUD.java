@@ -1,7 +1,7 @@
 package com.badnewsbots.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.badnewsbots.PUDController;
+import com.badnewsbots.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -27,7 +27,7 @@ public final class PUD {
     public static double kD = 0.004;//12.72V idle
     public static double f = 0.2;
     public static double multiMovementAdmissibleError = 100;
-    public static PUDController pidController = new PUDController(kP, kI, kD);
+    public static PIDController pidController = new PIDController(kP, kI, kD);
 
     public static double grabbyYawLeftPos = 0.3;
     public static double grabbyYawCenterPos = 0.5;
