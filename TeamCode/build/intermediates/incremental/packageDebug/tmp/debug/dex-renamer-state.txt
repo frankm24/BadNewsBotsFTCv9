@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 #Sat Jan 27 14:34:20 EST 2024
+=======
+#Sun Jan 21 11:50:35 EST 2024
+>>>>>>> Stashed changes
 base.0=/Users/frankmurphy/Documents/FTCRobotics/BadNewsBotsFTCv9/TeamCode/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
 base.1=/Users/frankmurphy/Documents/FTCRobotics/BadNewsBotsFTCv9/TeamCode/build/intermediates/dex/debug/mergeLibDexDebug/10/classes.dex
 base.10=/Users/frankmurphy/Documents/FTCRobotics/BadNewsBotsFTCv9/TeamCode/build/intermediates/dex/debug/mergeProjectDexDebug/2/classes.dex

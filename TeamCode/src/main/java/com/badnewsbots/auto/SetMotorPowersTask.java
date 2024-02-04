@@ -22,11 +22,15 @@ public final class SetMotorPowersTask implements AutonomousTask {
 
     }
 
+<<<<<<< Updated upstream
     public SetMotorPowersTask(MecanumDrive drive, double timeSeconds, double leftX, double leftY, double rightX, double speedMultiplier) {
         this.leftX = leftX;
         this.leftY = leftY;
         this.rightX = rightX;
         this.speedMultiplier = speedMultiplier;
+=======
+    public SetMotorPowersTask(MecanumDrive drive, double timeSeconds) {
+>>>>>>> Stashed changes
         this.timeSeconds = timeSeconds;
         this.drive = drive;
     }
