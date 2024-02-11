@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Autonomous
+@Autonomous(group="Test")
 public final class AutonomousCodingTest extends LinearOpMode {
 
     private final List<AutonomousTask> taskList = new ArrayList<>();

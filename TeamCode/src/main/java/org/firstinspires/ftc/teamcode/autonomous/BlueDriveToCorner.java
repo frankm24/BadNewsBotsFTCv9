@@ -45,7 +45,7 @@ public final class BlueDriveToCorner extends LinearOpMode {
         CenterstageCompBot robot = new CenterstageCompBot(hardwareMap, telemetry);
         MecanumDrive drive = robot.getDrive();
         AutonomousTaskSequenceRunner autonomousTaskSequenceRunner = new AutonomousTaskSequenceRunner(this);
-        taskList.add(new SetMotorPowersTask(drive, 0, -1, 0,0,1));
+        taskList.add(new SetMotorPowersTask(drive, 0, -1, 0,1));
         taskList.add(new WaitSecondsTask(waitTime));
         // Needed for opMode context to call opModeIsActive() in loop
 

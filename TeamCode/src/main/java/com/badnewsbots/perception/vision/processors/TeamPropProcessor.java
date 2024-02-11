@@ -52,14 +52,14 @@ public final class TeamPropProcessor implements VisionProcessor {
     private final RectF roiLeftCanvas = new RectF(100, 100,200,200);
 
     private final org.opencv.core.Point point1Center = new org.opencv.core.Point(300, 300);
-    private final org.opencv.core.Point point2Center = new org.opencv.core.Point(400, 400);
+    private final org.opencv.core.Point point2Center = new org.opencv.core.Point(400, 360);
     private final org.opencv.core.Rect centerROI = new org.opencv.core.Rect(point1Center, point2Center);
-    private final RectF roiCenterCanvas = new RectF(300, 300, 400, 400);
+    private final RectF roiCenterCanvas = new RectF(300, 300, 400, 360);
 
-    private final org.opencv.core.Point point1Right = new org.opencv.core.Point(500, 420);
-    private final org.opencv.core.Point point2Right = new org.opencv.core.Point(600, 480);
+    private final org.opencv.core.Point point1Right = new org.opencv.core.Point(500, 320);
+    private final org.opencv.core.Point point2Right = new org.opencv.core.Point(600, 360);
     private final org.opencv.core.Rect rightROI = new org.opencv.core.Rect(point1Right, point2Right);
-    private final RectF roiRightCanvas = new RectF(500, 420, 600, 480);
+    private final RectF roiRightCanvas = new RectF(500, 320, 600, 360);
 
 
     private int leftCount;

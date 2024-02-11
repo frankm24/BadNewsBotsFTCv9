@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous
+@Autonomous(group="Test")
 public final class MotorEncoderTest extends LinearOpMode {
 
     private final List<AutonomousTask> taskList = new ArrayList<>();

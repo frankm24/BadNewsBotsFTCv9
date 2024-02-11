@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.badnewsbots.auto.AutonomousTask;
 import com.badnewsbots.auto.AutonomousTaskSequenceRunner;
+import com.badnewsbots.auto.SetMotorPowersTask;
 import com.badnewsbots.auto.WaitSecondsTask;
 import com.badnewsbots.hardware.robots.CenterstageCompBot;
 import com.badnewsbots.auto.DriveToAprilTagTask;
@@ -32,6 +33,11 @@ import java.util.concurrent.TimeUnit;
 @Autonomous
 public final class RedAuto2 extends LinearOpMode {
     public static boolean visionBased = false;
+    public static TeamPropProcessor.TeamPropLocation testLocation = TeamPropProcessor.TeamPropLocation.CENTER; // hard coded for now
+    public static double centerForwardWaitTime = 0.6;
+    public static double rightTurnWaitTime = 0.1;
+    public static double rightForwardWaitTime = 0.6;
+
     private final List<AutonomousTask> taskList = new ArrayList<>();
     private VisionPortal frontVisionPortal;
     private VisionPortal leftVisionPortal;
@@ -103,8 +109,6 @@ public final class RedAuto2 extends LinearOpMode {
         frontVisionPortal.stopStreaming();
         leftVisionPortal.resumeStreaming();
 
-        location = TeamPropProcessor.TeamPropLocation.RIGHT; // hard coded for now
-
         if (visionBased) {
             switch (location) {
                 case RIGHT:
@@ -119,12 +123,16 @@ public final class RedAuto2 extends LinearOpMode {
                     break;
             }
         } else {
-            switch (location) {
+            switch (testLocation) {
                 case RIGHT:
-                    taskList.add(new WaitSecondsTask(1));
+                    taskList.add(new SetMotorPowersTask(drive, 0, 0, 0.5, 1));
+                    taskList.add(new WaitSecondsTask(rightTurnWaitTime));
+                    taskList.add(new SetMotorPowersTask(drive, 0, 0.5, 0, 1));
+                    taskList.add(new WaitSecondsTask(rightForwardWaitTime));
                     break;
                 case CENTER:
-                    taskList.add(new WaitSecondsTask(1));
+                    taskList.add(new SetMotorPowersTask(drive, 0, 0.5, 0, 1));
+                    taskList.add(new WaitSecondsTask(centerForwardWaitTime));
                     break;
                 case LEFT:
                     taskList.add(new WaitSecondsTask(1));

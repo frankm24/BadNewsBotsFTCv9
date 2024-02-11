@@ -88,7 +88,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 // Taken from example code for driving to AprilTags, drives back and forth between two AprilTags.
-@Autonomous
+@Autonomous(group="Test")
 public final class DriveToAprilTag extends LinearOpMode {
     private AutonomousTestingBot robot;
     private MecanumDrive drive;

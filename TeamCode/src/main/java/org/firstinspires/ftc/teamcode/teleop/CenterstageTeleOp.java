@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 @TeleOp
 public final class CenterstageTeleOp extends LinearOpMode {
+    public static int armHoverPos = 100;
+
     private CenterstageCompBot robot;
     private GamepadEx gamepadEx1;
     //private GamepadEx gamepadEx2;
@@ -87,17 +89,14 @@ public final class CenterstageTeleOp extends LinearOpMode {
         }
         if (gamepadEx1.aPressed()) {
             pud.setGrabbyTargetStatus(PUD.GrabbyStatus.OPEN);
-            pud.moveArmToAngleTicksAsync(100);
         }
         if (gamepadEx1.bPressed()) {
-            pud.moveArmToAngleTicksAsync(0);
             pud.setGrabbyTargetStatus(PUD.GrabbyStatus.CLOSED1PX);
         }
         if (gamepadEx1.xPressed()) {
-            pud.moveArmToAngleTicksAsync(150);
+            pud.moveArmToAngleTicksAsync(armHoverPos);
         }
         if (gamepadEx1.yPressed()) {
-            pud.moveArmToAngleTicksAsync(0);
             pud.setGrabbyTargetStatus(PUD.GrabbyStatus.CLOSED2PX);
         }
         if (gamepadEx1.leftBumperPressed()) {

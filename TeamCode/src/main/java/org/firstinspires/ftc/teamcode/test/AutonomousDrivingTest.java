@@ -87,7 +87,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 
-@Autonomous
+@Autonomous(group="Test")
 public final class AutonomousDrivingTest extends LinearOpMode {
     private AutonomousTestingBot robot;
     private MecanumDrive drive;

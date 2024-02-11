@@ -32,7 +32,7 @@ public final class CenterstageCompBot implements Robot {
     private MecanumDrive drive;
     private PUD pud;
     public CenterstageCompBot(HardwareMap hardwareMap, Telemetry telemetry) {
-        drive = new MecanumDrive(hardwareMap);
+        drive = new MecanumDrive(hardwareMap, 1, -1, 1, 1);
         pud = new PUD(hardwareMap, telemetry);
     }
 

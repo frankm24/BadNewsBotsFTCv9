@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Config
-@Autonomous
+@Autonomous(group="Test")
 public final class AprilTagDataCollection extends LinearOpMode {
     private AutonomousTestingBot robot;
     private MecanumDrive drive;

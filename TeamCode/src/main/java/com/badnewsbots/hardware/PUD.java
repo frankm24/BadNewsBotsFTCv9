@@ -33,12 +33,12 @@ public final class PUD {
     public static double grabbyYawCenterPos = 0.5;
     public static double grabbyYawRightPos = 0.7;
 
-    public static double grabbyOpenPos = 0.66;
+    public static double grabbyOpenPos = 0.6;
     public static double grabbyClosedPos1Px = 0.56;
-    public static double grabbyClosedPos2Px = 0.53;
+    public static double grabbyClosedPos2Px = 0.72;
 
     public static double grabbyPickUpPos = 0.08;
-    public static double grabbyDropPos = 0.6;
+    public static double grabbyDropPos = 0.3;
 
     public static int armDropPos = 2300;
     public static int armPrePickUpPos = 200;
@@ -113,7 +113,7 @@ public final class PUD {
         armCurrentPositionTicks = armMotor.getCurrentPosition();
         armCurrentPositionTicksPlusZeroPos = armCurrentPositionTicks + zeroPosition;
 
-        if (zeroLimitSwitch.isDown() && armTargetPositionTicksPlusZeroPos == 0) {
+        if (zeroLimitSwitch.isDown() && armTargetPositionTicksPlusZeroPos <= 0) {
             armPowerDisabled = true;
             zeroArmFromMinAngle();
         } //else if (endLimitSwitch.isDown() && armTargetPositionTicks >= MAX_ROT_TICKS) {
@@ -138,8 +138,8 @@ public final class PUD {
         telemetry.addData("power", power);
         telemetry.addData("target angle deg", (armTargetPositionTicksPlusZeroPos - armStartingAngleToZero) / MOTOR_TICKS_PER_DEGREE);
         telemetry.addData("target position", armTargetPositionTicksPlusZeroPos);
-        telemetry.addData("current position", armCurrentPositionTicks); // remove after experiment)
         telemetry.addData("adjusted current position", armCurrentPositionTicksPlusZeroPos);
+        telemetry.addData("current position", armCurrentPositionTicks); // remove after experiment)
         telemetry.addData("zero limit switch is down", zeroLimitSwitch.isDown());
         //telemetry.addData("end limit switch is down", endLimitSwitch.isDown());
         telemetry.addData("zeroPos", zeroPosition);
@@ -168,7 +168,7 @@ public final class PUD {
                 while (Math.abs(armTargetPositionTicksPlusZeroPos - armCurrentPositionTicksPlusZeroPos) > multiMovementAdmissibleError) {
                     Thread.yield();// while not within error margin wait
                 }
-                moveArmToAngleTicksAsync(0);
+                moveArmToAngleTicksAsync(-90);
                 // once there, async set target pos 0
             });
             thread.start();
@@ -201,3 +201,8 @@ public final class PUD {
     }
 
 }
+/*
+Psuedo code:
+
+target arm PID to pre-pick up position
+ */
