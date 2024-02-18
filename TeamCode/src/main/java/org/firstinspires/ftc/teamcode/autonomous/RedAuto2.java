@@ -34,9 +34,11 @@ import java.util.concurrent.TimeUnit;
 public final class RedAuto2 extends LinearOpMode {
     public static boolean visionBased = false;
     public static TeamPropProcessor.TeamPropLocation testLocation = TeamPropProcessor.TeamPropLocation.CENTER; // hard coded for now
-    public static double centerForwardWaitTime = 0.6;
-    public static double rightTurnWaitTime = 0.1;
-    public static double rightForwardWaitTime = 0.6;
+    public static double centerForwardWaitTime = 0.5;
+    public static double rightTurnWaitTime = 0.5;
+    public static double rightForwardWaitTime = 0.8;`
+    public static double leftTurnWaitTime = 0.25;
+    public static double leftForwardWaitTime = 0.6;
 
     private final List<AutonomousTask> taskList = new ArrayList<>();
     private VisionPortal frontVisionPortal;
@@ -125,17 +127,20 @@ public final class RedAuto2 extends LinearOpMode {
         } else {
             switch (testLocation) {
                 case RIGHT:
-                    taskList.add(new SetMotorPowersTask(drive, 0, 0, 0.5, 1));
-                    taskList.add(new WaitSecondsTask(rightTurnWaitTime));
                     taskList.add(new SetMotorPowersTask(drive, 0, 0.5, 0, 1));
                     taskList.add(new WaitSecondsTask(rightForwardWaitTime));
+                    taskList.add(new SetMotorPowersTask(drive, 0, 0, 0.5, 1));
+                    taskList.add(new WaitSecondsTask(rightTurnWaitTime));
                     break;
                 case CENTER:
                     taskList.add(new SetMotorPowersTask(drive, 0, 0.5, 0, 1));
                     taskList.add(new WaitSecondsTask(centerForwardWaitTime));
                     break;
                 case LEFT:
-                    taskList.add(new WaitSecondsTask(1));
+                    taskList.add(new SetMotorPowersTask(drive, 0, 0.5, 0, 1));
+                    taskList.add(new WaitSecondsTask(leftForwardWaitTime));
+                    taskList.add(new SetMotorPowersTask(drive, 0, 0, -0.5, 1));
+                    taskList.add(new WaitSecondsTask(leftTurnWaitTime));
                     break;
             }
         }
