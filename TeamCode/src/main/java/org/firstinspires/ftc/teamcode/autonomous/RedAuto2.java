@@ -36,7 +36,7 @@ public final class RedAuto2 extends LinearOpMode {
     public static TeamPropProcessor.TeamPropLocation testLocation = TeamPropProcessor.TeamPropLocation.CENTER; // hard coded for now
     public static double centerForwardWaitTime = 0.5;
     public static double rightTurnWaitTime = 0.5;
-    public static double rightForwardWaitTime = 0.8;`
+    public static double rightForwardWaitTime = 0.8;
     public static double leftTurnWaitTime = 0.25;
     public static double leftForwardWaitTime = 0.6;
 
