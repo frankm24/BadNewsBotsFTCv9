@@ -31,7 +31,7 @@ public final class PipelineTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "frontWebcam");
         //SignalSleeveProcessor signalSleeveProcessor = new SignalSleeveProcessor(640, 480, CameraOrientation.LEFT);
-        TeamPropProcessor teamPropProcessor = new TeamPropProcessor(imageWidth, imageHeight, TeamPropProcessor.Alliance.RED);
+        TeamPropProcessor teamPropProcessor = new TeamPropProcessor(imageWidth, imageHeight, TeamPropProcessor.Alliance.RED, TeamPropProcessor.DetectionMode.RIGHT_TWO);
         AprilTagProcessor aprilTagProcessor = new AprilTagProcessor.Builder()
                 //.setLensIntrinsics() // Uses one from builtinwebcamcalibrations.xml if available if you do not specify your own
                 .build();
@@ -59,7 +59,7 @@ public final class PipelineTest extends LinearOpMode {
             }
 
              */
-            if (visionPortal.getProcessorEnabled(aprilTagProcessor)) {
+            /*if (visionPortal.getProcessorEnabled(aprilTagProcessor)) {
                 for (AprilTagDetection detection : aprilTagProcessor.getDetections()) {
                     telemetry.addData("id", detection.id);
                     telemetry.addData("Ftc range", detection.ftcPose.range);
@@ -67,6 +67,10 @@ public final class PipelineTest extends LinearOpMode {
                     telemetry.addData("Ftc yaw", detection.ftcPose.yaw);
                     telemetry.addLine("========");
                 }
+            } */
+            if(visionPortal.getProcessorEnabled(teamPropProcessor)) {
+                telemetry.addData("Team prop location", teamPropProcessor.getTeamPropLocation());
+                telemetry.addData("values", Arrays.toString(teamPropProcessor.getFilterCounts()));
             }
             telemetry.update();
         }

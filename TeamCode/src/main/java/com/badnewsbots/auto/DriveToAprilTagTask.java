@@ -39,7 +39,7 @@ public final class DriveToAprilTagTask implements AutonomousTask {
     private double yawError;
 
     @Override
-    public boolean isTaskCompleted() {
+    public boolean isCompleted() {
         // if the tag is not visible, we cannot know if we are at the desired position or not, so return false (not completed).
         if (tagDetection == null) return false;
         // if we are within the margin of error, shut off all power to the motors and return true (completed) so the next task can be performed.
@@ -53,6 +53,11 @@ public final class DriveToAprilTagTask implements AutonomousTask {
     @Override
     public void init() {
 
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return true;
     }
 
     @Override

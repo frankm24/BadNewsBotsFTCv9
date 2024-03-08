@@ -26,11 +26,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *                   / ______ \
  *     ------------.-'   _  '-..+              Front of Bot
  *              /   _  ( Y )  _  \                  ^
- *             |  ( X )  _  ( B ) |     Front Left   \    Front Right
+ *             |  ( X )  _  ( B ) |     Front Left    \    Front Right
  *        ___  '.      ( A )     /|       Wheel       \      Wheel
  *      .'    '.    '-._____.-'  .'       (x/▢)        \     (Y/Δ)
- *     |       |                 |                      \
- *      '.___.' '.               |          Back Left    \   Back Right
+ *     |       |                 |
+ *      '.___.' '.               |          Back Left  \   Back Right
  *               '.             /             Wheel       \    Wheel
  *                \.          .'              (A/X)        \   (B/O)
  *                  \________/
@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *
  */
 @TeleOp(group = "Test")
-public final class DrivetrainMotorDebugger extends LinearOpMode {
+public final class  DrivetrainMotorDebugger extends LinearOpMode {
     private FtcDashboard ftcDashboard;
     private GamepadEx gamepadEx1; // switch back right and back left
     private DcMotor front_left;

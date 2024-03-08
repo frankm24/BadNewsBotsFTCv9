@@ -15,7 +15,7 @@ public class AutonomousTestingBot implements Robot {
     private final ModernRoboticsI2cColorSensor colorSensor;
 
     public AutonomousTestingBot(HardwareMap hardwareMap) {
-        drive = new MecanumDrive(hardwareMap, -1, -1, 1, 1);
+        drive = new MecanumDrive(hardwareMap, -1, -1, 1, 1, MecanumDrive.DriveMode.FORWARD);
         frontCamera = hardwareMap.get(WebcamName.class, "frontWebcam");
         leftCamera = hardwareMap.get(WebcamName.class, "leftWebcam");
         colorSensor = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "sensor_color");

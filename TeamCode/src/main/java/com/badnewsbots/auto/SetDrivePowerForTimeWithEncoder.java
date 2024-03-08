@@ -4,6 +4,7 @@ import com.badnewsbots.hardware.drivetrains.MecanumDrive;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Deprecated
 public class SetDrivePowerForTimeWithEncoder implements AutonomousTask {
     private final MecanumDrive drive;
     private final double leftX, leftY, rightX, speedMultiplier;
@@ -11,13 +12,20 @@ public class SetDrivePowerForTimeWithEncoder implements AutonomousTask {
 
     private double elapsedTime = 0;
     private double time = -1;
+    private boolean initialized = false;
 
     @Override
-    public boolean isTaskCompleted() {return elapsedTime >= time;}
+    public boolean isCompleted() {return elapsedTime >= time;}
 
     @Override
     public void init() {
         drive.setMotorPowerFromGamepadVector(leftX, leftY, rightX, speedMultiplier);
+        initialized = true;
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return initialized;
     }
 
     @Override

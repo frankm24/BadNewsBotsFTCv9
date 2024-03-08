@@ -5,11 +5,10 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 public class ResumeVisionPortalStreaming implements AutonomousTask {
     private final VisionPortal visionPortal;
-    private boolean taskCompleted = false;
 
     @Override
-    public boolean isTaskCompleted() {
-        return taskCompleted;
+    public boolean isCompleted() {
+        return true;
     }
 
     @Override
@@ -18,9 +17,12 @@ public class ResumeVisionPortalStreaming implements AutonomousTask {
     }
 
     @Override
-    public void updateTask(double deltaTime) {
-        taskCompleted = true;
+    public boolean isInitialized() {
+        return false;
     }
+
+    @Override
+    public void updateTask(double deltaTime) {}
 
     public ResumeVisionPortalStreaming(VisionPortal visionPortal) {
         this.visionPortal = visionPortal;

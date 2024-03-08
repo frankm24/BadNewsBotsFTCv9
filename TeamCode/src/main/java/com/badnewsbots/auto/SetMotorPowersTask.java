@@ -4,16 +4,21 @@ import com.badnewsbots.hardware.drivetrains.MecanumDrive;
 
 public final class SetMotorPowersTask implements AutonomousTask {
     private final MecanumDrive drive;
-    private double leftX, leftY, rightX, speedMultiplier;
+    private final double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
 
     @Override
-    public boolean isTaskCompleted() {
+    public boolean isCompleted() {
         return true;
     }
 
     @Override
     public void init() {
-        drive.setMotorPowerFromGamepadVector(leftX, leftY, rightX, speedMultiplier);
+        drive.setIndividualMotorPowers(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return false;
     }
 
     @Override
@@ -21,12 +26,12 @@ public final class SetMotorPowersTask implements AutonomousTask {
 
     }
 
-    public SetMotorPowersTask(MecanumDrive drive, double leftX, double leftY, double rightX, double speedMultiplier) {
-        this.leftX = leftX;
-        this.leftY = leftY;
-        this.rightX = rightX;
-        this.speedMultiplier = speedMultiplier;
+    public SetMotorPowersTask(MecanumDrive drive, double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
         this.drive = drive;
+        this.frontLeftPower = frontLeftPower;
+        this.frontRightPower = frontRightPower;
+        this.backLeftPower = backLeftPower;
+        this.backRightPower = backRightPower;
     }
 
 }

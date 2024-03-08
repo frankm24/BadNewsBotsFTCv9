@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -22,17 +23,18 @@ import java.util.concurrent.TimeUnit;
 @Config
 @Autonomous(group="Test")
 public final class AprilTagDataCollection extends LinearOpMode {
-    private AutonomousTestingBot robot;
+    private CenterstageCompBot robot;
     private MecanumDrive drive;
 
-    public static int DESIRED_TAG_ID = 6;    // Choose the tag you want to approach or set to -1 for ANY tag.
+    public static boolean useFrontCamera = true;
+    public static int DESIRED_TAG_ID = 5;    // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new AutonomousTestingBot(hardwareMap);
+        robot = new CenterstageCompBot(hardwareMap, telemetry);
         drive = robot.getDrive();
 
         boolean targetFound = false; // Set to true when an AprilTag target is detected
@@ -78,9 +80,11 @@ public final class AprilTagDataCollection extends LinearOpMode {
                 telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
                 telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
                 telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+                telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+                telemetry.addLine("------------------");
                 telemetry.addData("Roll", "%3.0f degrees", desiredTag.ftcPose.roll);
                 telemetry.addData("Pitch", "%3.0f degrees", desiredTag.ftcPose.pitch);
-                telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+
             }
             telemetry.update();
         }
@@ -102,9 +106,13 @@ public final class AprilTagDataCollection extends LinearOpMode {
         // Note: Decimation can be changed on-the-fly to adapt during a match.
         aprilTag.setDecimation(2);
 
+        WebcamName webcam = null;
+        if (useFrontCamera) webcam = robot.getFrontCamera();
+        else webcam = robot.getBackCamera();
+
         // Create the vision portal by using a builder.
         visionPortal = new VisionPortal.Builder()
-                .setCamera(robot.getFrontCamera())
+                .setCamera(webcam)
                 .addProcessor(aprilTag)
                 .setCameraResolution(new Size(640, 480)) // Default resolution but just being explicit
                 .enableLiveView(true) // Live view = on Robot Controller via HDMI, Camera Stream = DS

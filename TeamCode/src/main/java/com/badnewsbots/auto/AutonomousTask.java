@@ -1,8 +1,9 @@
 package com.badnewsbots.auto;
 
 public interface AutonomousTask {
-    boolean isTaskCompleted();
+    boolean isCompleted();
     void init();
+    boolean isInitialized();
     void updateTask(double deltaTime);
 }
 

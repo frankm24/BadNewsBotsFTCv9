@@ -7,6 +7,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 // Class which contains the hardware for a Mecanum-style drivetrain with gearing that does not alter motor direction.
 public class MecanumDrive implements Drive {
+    public enum DriveMode {
+        FORWARD,
+        REVERSE
+    }
+
     private final DcMotorEx backLeft;
     private final DcMotorEx frontLeft;
     private final DcMotorEx backRight;
@@ -34,7 +39,7 @@ public class MecanumDrive implements Drive {
         return backRight.getCurrentPosition();
     }
 
-    public MecanumDrive(HardwareMap hardwareMap, double backLeftDirectionMultiplier, double frontLeftDirectionMultiplier, double backRightDirectionMultiplier, double frontRightDirectionMultiplier) {
+    public MecanumDrive(HardwareMap hardwareMap, double backLeftDirectionMultiplier, double frontLeftDirectionMultiplier, double backRightDirectionMultiplier, double frontRightDirectionMultiplier, DriveMode driveMode) {
         this.backLeftDirectionMultiplier = backLeftDirectionMultiplier;
         this.frontLeftDirectionMultiplier = frontLeftDirectionMultiplier;
         this.backRightDirectionMultiplier = backRightDirectionMultiplier;
@@ -47,10 +52,17 @@ public class MecanumDrive implements Drive {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
-        backLeft = hardwareMap.get(DcMotorEx.class, "back_left");
-        frontLeft = hardwareMap.get(DcMotorEx.class, "front_left");
-        backRight = hardwareMap.get(DcMotorEx.class, "back_right");
-        frontRight = hardwareMap.get(DcMotorEx.class, "front_right");
+        if (driveMode == DriveMode.FORWARD) {
+            backLeft = hardwareMap.get(DcMotorEx.class, "back_left");
+            frontLeft = hardwareMap.get(DcMotorEx.class, "front_left");
+            backRight = hardwareMap.get(DcMotorEx.class, "back_right");
+            frontRight = hardwareMap.get(DcMotorEx.class, "front_right");
+        } else {
+            backLeft = hardwareMap.get(DcMotorEx.class, "front_right");
+            frontLeft = hardwareMap.get(DcMotorEx.class, "back_right");
+            backRight = hardwareMap.get(DcMotorEx.class, "front_left");
+            frontRight = hardwareMap.get(DcMotorEx.class, "back_left");
+        }
 
         // Scrapped this in favor of constructor customizable for our different drivetrains since they require different reverse configs.
 
@@ -84,5 +96,12 @@ public class MecanumDrive implements Drive {
         frontRight.setPower(power * frontRightDirectionMultiplier);
         backLeft.setPower(power * backLeftDirectionMultiplier);
         backRight.setPower(power * backRightDirectionMultiplier);
+    }
+
+    public void setIndividualMotorPowers(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+        frontLeft.setPower(frontLeftPower * frontLeftDirectionMultiplier);
+        frontRight.setPower(frontRightPower * frontRightDirectionMultiplier);
+        backLeft.setPower(backLeftPower * backLeftDirectionMultiplier);
+        backRight.setPower(backRightPower * backRightDirectionMultiplier);
     }
 }

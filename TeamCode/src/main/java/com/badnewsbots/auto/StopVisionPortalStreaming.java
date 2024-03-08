@@ -8,13 +8,18 @@ public class StopVisionPortalStreaming implements AutonomousTask {
     private boolean taskCompleted = false;
 
     @Override
-    public boolean isTaskCompleted() {
+    public boolean isCompleted() {
         return taskCompleted;
     }
 
     @Override
     public void init() {
         visionPortal.stopStreaming();
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return false;
     }
 
     @Override

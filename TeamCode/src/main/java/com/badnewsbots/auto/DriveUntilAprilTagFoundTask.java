@@ -12,15 +12,22 @@ public class DriveUntilAprilTagFoundTask implements AutonomousTask {
     private final MecanumDrive drive;
     private final int targetTagId;
     private final double leftX, leftY, rightX, speedMultiplier;
+    private boolean initialized = false;
 
     private AprilTagDetection tagDetection = null;
 
     @Override
-    public boolean isTaskCompleted() {return tagDetection != null;}
+    public boolean isCompleted() {return tagDetection != null;}
 
     @Override
     public void init() {
         drive.setMotorPowerFromGamepadVector(leftX, leftY, rightX, speedMultiplier);
+        initialized = true;
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return initialized;
     }
 
     @Override
