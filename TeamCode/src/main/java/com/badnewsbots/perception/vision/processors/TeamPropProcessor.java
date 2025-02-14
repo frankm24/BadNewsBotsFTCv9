@@ -17,9 +17,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.tensorflow.lite.InterpreterFactory;
-import org.tensorflow.lite.TensorFlowLite;
-import org.tensorflow.lite.support.image.TensorImage;
 
 // Based on SignalSleeveProcessor port
 @Config
@@ -40,7 +37,8 @@ public final class TeamPropProcessor implements VisionProcessor {
         THREE,
         RIGHT_TWO
     }
-    public static int twoModeDetectionThresh = 2000;
+    public static int redtwoModeDetectionThresh = 2000;
+    public static int blueTwoModeDetectionThresh = 2500;
 
     private final Alliance alliance;
     private final DetectionMode detectionMode;
@@ -48,8 +46,8 @@ public final class TeamPropProcessor implements VisionProcessor {
     private final Scalar redMin = new Scalar(0, 50, 50);
     private final Scalar redMax = new Scalar(10, 255, 255);
 
-    private final Scalar blueMin = new Scalar(110, 50, 50);
-    private final Scalar blueMax = new Scalar(130, 200, 200);
+    private final Scalar blueMin = new Scalar(110, 30, 30);
+    private final Scalar blueMax = new Scalar(130, 255, 255);
 
     private final int frameWidth;
     private final int frameHeight;
@@ -82,6 +80,9 @@ public final class TeamPropProcessor implements VisionProcessor {
         this.frameWidth = width;
         this.frameHeight = height;
         this.detectionMode = detectionMode;
+        if (alliance == Alliance.BLUE) {
+            redtwoModeDetectionThresh = blueTwoModeDetectionThresh;
+        }
     }
 
     @Override
@@ -127,8 +128,8 @@ public final class TeamPropProcessor implements VisionProcessor {
             centerCount = Core.countNonZero(centerMat);
             rightCount = Core.countNonZero(rightMat);
 
-            if (centerCount < twoModeDetectionThresh) {
-                if (rightCount < twoModeDetectionThresh) {
+            if (centerCount < redtwoModeDetectionThresh) {
+                if (rightCount < redtwoModeDetectionThresh) {
                     teamPropLocation = TeamPropLocation.LEFT;
                 } else {
                     teamPropLocation = TeamPropLocation.RIGHT;

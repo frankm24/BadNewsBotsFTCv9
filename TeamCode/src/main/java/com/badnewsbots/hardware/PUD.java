@@ -47,7 +47,7 @@ public final class PUD {
 
     public static double grabbyOpenClaw = 0.6;
     public static double grabbyClosedClaw1Px = 0.64;
-    public static double grabbyClosedClaw2Px = 0.75;
+    public static double grabbyClosedClaw2Px = 0.77;
 
     public static double grabbyPickUpPitch = .52;
     public static double grabbyHoverPitch = .48;
@@ -153,7 +153,7 @@ public final class PUD {
         grabbyPitchServo.setPosition(grabbyTargetPitch);
 
         if (!zeroLimitSwitch.isDown()) {
-            armMotor.setPower(-0.35);
+            armMotor.setPower(-0.7);
             telemetry.addLine("Zeroing arm...");
         } else {
             armMotor.setPower(0);

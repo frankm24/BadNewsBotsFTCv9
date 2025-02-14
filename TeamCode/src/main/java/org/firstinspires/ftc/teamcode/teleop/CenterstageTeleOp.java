@@ -12,10 +12,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 
 @Config
 @TeleOp
+// never dies from static shocks
 public final class CenterstageTeleOp extends LinearOpMode {
     private enum DriveMode {
         DRIVERS_IN_CONTROL,
@@ -37,6 +39,7 @@ public final class CenterstageTeleOp extends LinearOpMode {
 
     private DcMotorEx armMotor;
     public static int X = 1;
+    private int currentX = X;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -105,6 +108,9 @@ public final class CenterstageTeleOp extends LinearOpMode {
         } else if (gamepadEx1.y() || gamepadEx2.dpadRight()) {
             pud.setCurrentArmMode(PUD.ArmMode.MANUAL);
             pud.setManualMovePower(-0.4);
+        } else if (gamepadEx1.dpadUp()) {
+            pud.setCurrentArmMode(PUD.ArmMode.MANUAL);
+            pud.setManualMovePower(-1);
         } else {
             pud.setManualMovePower(0);
         }
@@ -146,31 +152,30 @@ public final class CenterstageTeleOp extends LinearOpMode {
             } else {
                 pud.setGrabbyTargetGrip(PUD.GrabbyGrip.OPEN);
             }
-            /*
-            Thread thread = new Thread(() -> {
-
-            });
-            thread.start();
-             */
         }
-        if ( (gamepadEx1.leftBumperPressed() || gamepadEx2.leftBumperPressed()) && (pud.getTargetKnownArmAngle() == PUD.ArmAngle.HOVER) ) {
+        if ( (gamepadEx1.leftBumperPressed() || gamepadEx2.leftBumperPressed()) ) {
             Thread thread = new Thread(() -> {
+                pud.setGrabbyTargetPitch(PUD.GrabbyPitch.HOVER);
                 pud.moveArmToKnownAngle(PUD.ArmAngle.PICK_UP);
-                sleep(400);
+                sleep(600);
                 pud.setGrabbyTargetGrip(PUD.GrabbyGrip.CLOSED2PX);
                 sleep(200);
-                pud.moveArmToKnownAngle(PUD.ArmAngle.HOVER);
+                pud.incrementGrabbyTargetPitch(-0.05);
+                pud.moveArmToAngleTicksAsync(600);
             });
             thread.start();
         }
         if (gamepadEx2.bPressed() && pud.getTargetKnownArmAngle() == PUD.ArmAngle.DROP_X) {
             pud.setGrabbyTargetYaw(PUD.GrabbyYaw.LEFT);
-            pud.incrementGrabbyTargetPitch(0.03);
+            pud.incrementGrabbyTargetPitch(-0.05);
         }
         if (gamepadEx2.xPressed() && pud.getTargetKnownArmAngle() == PUD.ArmAngle.DROP_X) {
             pud.setGrabbyTargetYaw(PUD.GrabbyYaw.RIGHT);
+            pud.incrementGrabbyTargetPitch(-0.05);
         }
         if (gamepadEx2.yPressed() && pud.getTargetKnownArmAngle() == PUD.ArmAngle.DROP_X) {
+            CenterstageCompBot.Level level = levelHashtable.get(currentX);
+            pud.setGrabbyTargetPitch(level.grabbyPitch);
             pud.setGrabbyTargetYaw(PUD.GrabbyYaw.CENTER);
         }
         if (gamepadEx2.dpadUpPressed()) {
@@ -178,6 +183,7 @@ public final class CenterstageTeleOp extends LinearOpMode {
             if (pud.getTargetKnownArmAngle() == PUD.ArmAngle.DROP_X) {
                 if (X > 6) X = 6;
                 if (X < 1) X = 1;
+                currentX = X;
                 CenterstageCompBot.Level level = levelHashtable.get(X);
                 pud.moveArmToKnownAngle(PUD.ArmAngle.DROP_X);
                 pud.moveArmToAngleTicksAsync(level.armAngle);
@@ -189,6 +195,7 @@ public final class CenterstageTeleOp extends LinearOpMode {
             if (pud.getTargetKnownArmAngle() == PUD.ArmAngle.DROP_X) {
                 if (X > 6) X = 6;
                 if (X < 1) X = 1;
+                currentX = X;
                 CenterstageCompBot.Level level = levelHashtable.get(X);
                 pud.moveArmToKnownAngle(PUD.ArmAngle.DROP_X);
                 pud.moveArmToAngleTicksAsync(level.armAngle);

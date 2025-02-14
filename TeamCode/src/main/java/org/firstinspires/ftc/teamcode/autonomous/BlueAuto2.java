@@ -8,6 +8,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.badnewsbots.auto.AutonomousTask;
 import com.badnewsbots.auto.AutonomousTaskSequenceRunner;
 import com.badnewsbots.auto.DriveUntilAprilTagFoundTask;
+import com.badnewsbots.auto.RunCodeBlockAsyncTask;
 import com.badnewsbots.auto.RunCodeBlockTask;
 import com.badnewsbots.auto.SetMotorPowersFromGamepadVectorTask;
 import com.badnewsbots.auto.SetMotorPowersTask;
@@ -38,15 +39,14 @@ import java.util.concurrent.TimeUnit;
 
 @Config
 @Autonomous
-public final class RedAuto2 extends LinearOpMode {
-    public static boolean extendedVision = false;
+public final class BlueAuto2 extends LinearOpMode {
     public static TeamPropProcessor.TeamPropLocation testLocation = TeamPropProcessor.TeamPropLocation.CENTER; // hard coded for now
-    public static double centerForwardWaitTime = 1.05;
-    public static double rightTurnWaitTime = 0.6;
+    public static double centerForwardWaitTime = 0.91;
+    public static double rightTurnWaitTime = 0.75;
     public static double rightForwardWaitTime = 0.6;
     public static double leftTurnWaitTime = 0.8;
     public static double leftForwardWaitTime = 0.5;
-    public static double targetRangeLeft = 17;
+    public static double targetRange = 16.5;
 
     private final List<AutonomousTask> taskList = new ArrayList<>();
     private PUD pud;
@@ -71,7 +71,7 @@ public final class RedAuto2 extends LinearOpMode {
 
         FTCDashboardCameraStreamProcessor frontCameraStreamProcessor = new FTCDashboardCameraStreamProcessor();
         FTCDashboardCameraStreamProcessor backCameraStreamPrcessor = new FTCDashboardCameraStreamProcessor();
-        TeamPropProcessor teamPropProcessor = new TeamPropProcessor(640, 480, TeamPropProcessor.Alliance.RED, TeamPropProcessor.DetectionMode.RIGHT_TWO);
+        TeamPropProcessor teamPropProcessor = new TeamPropProcessor(640, 480, TeamPropProcessor.Alliance.BLUE, TeamPropProcessor.DetectionMode.RIGHT_TWO);
         AprilTagProcessor backAprilTagProcessor = new AprilTagProcessor.Builder().build();
         backAprilTagProcessor.setDecimation(2);
 
@@ -144,18 +144,17 @@ public final class RedAuto2 extends LinearOpMode {
                 taskList.add(new SetMotorPowersTask(autoDrive, 1, -0.1, 1, -0.1));
                 taskList.add(new WaitSecondsTask(rightTurnWaitTime));
                 taskList.add(new SetMotorPowersTask(autoDrive, 0, 0, 0, 0));
-                taskList.add(new SetMotorPowersTask(autoDrive, 0, 0, 0, 0));
                 taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive,0, -0.5, 0, 1));
                 taskList.add(new WaitSecondsTask(0.3));
                 taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, 0, 0, 0));
-                taskList.add(new DriveUntilAprilTagFoundTask(backAprilTagProcessor, autoDrive, 4, 0, 0, -0.5, 1));
+                taskList.add(new DriveUntilAprilTagFoundTask(backAprilTagProcessor, autoDrive, 3, 0, 0, 0.5, 1));
                 taskList.add(new RunCodeBlockTask(() -> {
                     CenterstageCompBot.Level level = levelHashtable.get(1);
                     pud.moveArmToKnownAngle(PUD.ArmAngle.DROP_X);
                     pud.moveArmToAngleTicksAsync(level.armAngle);
                     pud.setGrabbyTargetPitch(level.grabbyPitch);
                 }));
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, backAprilTagProcessor, teleOpDrive, telemetry, 6, 15.7, 1, 0, 1.5, 0, 0.5));
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, backAprilTagProcessor, teleOpDrive, telemetry, 3, 15.8, 1, 0, 1.5, 0, 0.5));
                 taskList.add(new RunCodeBlockTask(() -> {
                     pud.setGrabbyTargetGrip(PUD.GrabbyGrip.OPEN);
                 }));
@@ -181,14 +180,14 @@ public final class RedAuto2 extends LinearOpMode {
                 taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive,0, -0.5, 0, 1));
                 taskList.add(new WaitSecondsTask(0.3));
                 taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, 0, 0, 0));
-                taskList.add(new DriveUntilAprilTagFoundTask(backAprilTagProcessor, autoDrive, 4, 0, 0, -0.5, 1));
+                taskList.add(new DriveUntilAprilTagFoundTask(backAprilTagProcessor, autoDrive, 2, 0, 0, 0.5, 1));
                 taskList.add(new RunCodeBlockTask(() -> {
                     CenterstageCompBot.Level level = levelHashtable.get(1);
                     pud.moveArmToKnownAngle(PUD.ArmAngle.DROP_X);
                     pud.moveArmToAngleTicksAsync(level.armAngle);
                     pud.setGrabbyTargetPitch(level.grabbyPitch);
                 }));
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, backAprilTagProcessor, teleOpDrive, telemetry, 5, 15.7, 1, 0, 1.5, 0, 0.5));
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, backAprilTagProcessor, teleOpDrive, telemetry, 2, 16.0, 1, 0, 1.5, 0, 0.5));
                 taskList.add(new RunCodeBlockTask(() -> {
                     pud.setGrabbyTargetGrip(PUD.GrabbyGrip.OPEN);
                 }));
@@ -201,20 +200,11 @@ public final class RedAuto2 extends LinearOpMode {
                     //backVisionPortal.stopStreaming();
                     //frontVisionPortal.resumeStreaming();
                 }));
-                if (extendedVision) {
-                    taskList.add(new RunCodeBlockTask(() -> {
-                        backVisionPortal.stopStreaming();
-                        frontVisionPortal.resumeStreaming();
-                        frontVisionPortal.setProcessorEnabled(frontAprilTagProcessor, true);
-                    }));
-                    taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, frontAprilTagProcessor, autoDrive, telemetry, 7, 20, 1, 0, 1.5, 0, 0.5));
-                } else {
-                    taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, -1, 0, 0, 1));
-                    taskList.add(new WaitSecondsTask(1.2));
-                    taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, -1, 0, 1));
-                    taskList.add(new WaitSecondsTask(.7));
-                    taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, 0, 0, 0));
-                }
+                taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, -1, 0, 0, 1));
+                taskList.add(new WaitSecondsTask(1.2));
+                taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, -1, 0, 1));
+                taskList.add(new WaitSecondsTask(.7));
+                taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, 0, 0, 0));
                 break;
             case LEFT:
                 taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, 1, 0, 1));
@@ -223,16 +213,16 @@ public final class RedAuto2 extends LinearOpMode {
                 taskList.add(new WaitSecondsTask(leftTurnWaitTime));
                 taskList.add(new SetMotorPowersTask(autoDrive, 0, 0, 0, 0));
                 taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive,0, -0.5, 0, 1));
-                taskList.add(new WaitSecondsTask(0.3));
+                taskList.add(new WaitSecondsTask(0.5));
                 taskList.add(new SetMotorPowersFromGamepadVectorTask(autoDrive, 0, 0, 0, 0));
-                taskList.add(new DriveUntilAprilTagFoundTask(backAprilTagProcessor, autoDrive, 4, 0, 0, -0.5, 1));
+                taskList.add(new DriveUntilAprilTagFoundTask(backAprilTagProcessor, autoDrive, 1, 0, 0, 0.5, 1));
                 taskList.add(new RunCodeBlockTask(() -> {
                     CenterstageCompBot.Level level = levelHashtable.get(1);
                     pud.moveArmToKnownAngle(PUD.ArmAngle.DROP_X);
                     pud.moveArmToAngleTicksAsync(level.armAngle);
                     pud.setGrabbyTargetPitch(level.grabbyPitch);
                 }));
-                taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, backAprilTagProcessor, teleOpDrive, telemetry, 4, targetRangeLeft, 1, 0, 1.5, 0, 0.5));
+                taskList.add(new DriveToAprilTagTask(CameraOrientation.FRONT, backAprilTagProcessor, teleOpDrive, telemetry, 1, targetRange, 1, 0, 1.5, 0, 0.5));
                 taskList.add(new RunCodeBlockTask(() -> {
                     pud.setGrabbyTargetGrip(PUD.GrabbyGrip.OPEN);
                 }));
